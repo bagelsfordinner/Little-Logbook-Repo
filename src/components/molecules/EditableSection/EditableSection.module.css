@@ -1,0 +1,35 @@
+.container {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.editable {
+  cursor: pointer;
+}
+
+.hovered {
+  border: 2px dashed var(--accent-primary);
+  border-radius: var(--radius-md);
+  background: rgba(var(--accent-primary-rgb, 107, 142, 111), 0.02);
+}
+
+.actionButtons {
+  position: absolute;
+  top: var(--spacing-xs);
+  right: var(--spacing-xs);
+  display: flex;
+  gap: var(--spacing-xs);
+  z-index: 10;
+}
+
+.actionButton {
+  min-width: 36px !important;
+  min-height: 36px !important;
+  padding: var(--spacing-xs) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+}
+
+.actionButton:hover {
+  transform: scale(1.05);
+}

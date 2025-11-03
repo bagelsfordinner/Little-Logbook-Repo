@@ -1,0 +1,1 @@
+export { HeroEditModal } from './HeroEditModal'

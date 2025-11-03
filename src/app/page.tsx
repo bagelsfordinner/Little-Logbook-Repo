@@ -1,95 +1,128 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+
+import { Button } from '@/components/atoms/Button'
+import { Icon } from '@/components/atoms/Icon'
+import Link from 'next/link'
+import styles from './page.module.css'
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main className={styles.container}>
+      <div className={styles.heroSection}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.title}>Little Logbook</h1>
+          <p className={styles.subtitle}>
+            Create beautiful family logbooks to document your adventures together. 
+            Share memories, photos, and stories with the people you love.
+          </p>
+          
+          <div className={styles.authPaths}>
+            <div className={styles.authPath}>
+              <div className={styles.pathIcon}>
+                <Icon name="plus-circle" size="lg" />
+              </div>
+              <h3 className={styles.pathTitle}>Create New Logbook</h3>
+              <p className={styles.pathDescription}>
+                Start your family&apos;s journey with a beautiful new logbook
+              </p>
+              <Button 
+                variant="primary" 
+                size="lg" 
+                onClick={() => window.location.href = '/signup'}
+              >
+                Get Started
+              </Button>
+            </div>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+            <div className={styles.authPath}>
+              <div className={styles.pathIcon}>
+                <Icon name="users" size="lg" />
+              </div>
+              <h3 className={styles.pathTitle}>Join Existing Logbook</h3>
+              <p className={styles.pathDescription}>
+                Have an invite? Join a family&apos;s logbook to share memories
+              </p>
+              <Button 
+                variant="secondary" 
+                size="lg" 
+                onClick={() => window.location.href = '/join'}
+              >
+                Join with Invite
+              </Button>
+            </div>
+
+            <div className={styles.authPath}>
+              <div className={styles.pathIcon}>
+                <Icon name="user" size="lg" />
+              </div>
+              <h3 className={styles.pathTitle}>Already Have Account</h3>
+              <p className={styles.pathDescription}>
+                Sign in to access your existing logbooks
+              </p>
+              <Button 
+                variant="ghost" 
+                size="lg" 
+                onClick={() => window.location.href = '/login'}
+              >
+                Sign In
+              </Button>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+
+      <div className={styles.featuresGrid}>
+        <div className={styles.featureCard}>
+          <div className={styles.featureIcon}>
+            <Icon name="camera" size="lg" />
+          </div>
+          <h3 className={styles.featureTitle}>Capture Memories</h3>
+          <p className={styles.featureDescription}>
+            Upload photos and videos to preserve your family&apos;s special moments forever.
+          </p>
+        </div>
+        
+        <div className={styles.featureCard}>
+          <div className={styles.featureIcon}>
+            <Icon name="users" size="lg" />
+          </div>
+          <h3 className={styles.featureTitle}>Share with Family</h3>
+          <p className={styles.featureDescription}>
+            Invite family members to contribute and view your shared logbook together.
+          </p>
+        </div>
+        
+        <div className={styles.featureCard}>
+          <div className={styles.featureIcon}>
+            <Icon name="heart" size="lg" />
+          </div>
+          <h3 className={styles.featureTitle}>Build Together</h3>
+          <p className={styles.featureDescription}>
+            Create a beautiful family story that grows with every adventure and milestone.
+          </p>
+        </div>
+      </div>
+
+      <div className={styles.ctaSection}>
+        <div className={styles.ctaCard}>
+          <h2 className={styles.ctaTitle}>Questions about Little Logbook?</h2>
+          <p className={styles.ctaDescription}>
+            Join thousands of families already documenting their adventures together.
+          </p>
+          <div className={styles.ctaButtons}>
+            <div className={styles.helpLinks}>
+              <Link href="/demo" className={styles.link}>
+                <Icon name="external-link" size="sm" />
+                View Demo
+              </Link>
+              <Link href="/faq" className={styles.link}>
+                <Icon name="help-circle" size="sm" />
+                Learn More
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }

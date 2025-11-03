@@ -1,0 +1,21 @@
+/* Gallery Page Layout */
+.page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding: 0;
+}
+
+/* Loading State */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.loadingSpinner {
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  text-align: center;
+}

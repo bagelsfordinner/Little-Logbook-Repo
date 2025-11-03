@@ -1,0 +1,195 @@
+.avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--border);
+  overflow: hidden;
+  transition: all var(--transition-base);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* Size Variants */
+.avatar[data-size="sm"] {
+  width: 32px;
+  height: 32px;
+}
+
+.avatar[data-size="md"] {
+  width: 40px;
+  height: 40px;
+}
+
+.avatar[data-size="lg"] {
+  width: 56px;
+  height: 56px;
+}
+
+.avatar[data-size="xl"] {
+  width: 80px;
+  height: 80px;
+  border-width: 3px;
+}
+
+/* Interactive State */
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:hover {
+  transform: scale(1.05);
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.interactive:active {
+  transform: scale(0.95);
+}
+
+.interactive:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Image */
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-full);
+  transition: opacity var(--transition-base);
+}
+
+.image[data-loaded="false"] {
+  opacity: 0;
+}
+
+.image[data-loaded="true"] {
+  opacity: 1;
+}
+
+/* Fallback Text */
+.fallback {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fallback[data-size="sm"] {
+  font-size: var(--font-size-xs);
+}
+
+.fallback[data-size="md"] {
+  font-size: var(--font-size-sm);
+}
+
+.fallback[data-size="lg"] {
+  font-size: var(--font-size-base);
+}
+
+.fallback[data-size="xl"] {
+  font-size: var(--font-size-lg);
+}
+
+/* Loading State */
+.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-secondary);
+}
+
+.skeleton {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 25%,
+    var(--bg-tertiary) 50%,
+    var(--bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: var(--radius-full);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Status Indicator (for future use) */
+.avatar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 25%;
+  height: 25%;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--bg-primary);
+  background-color: var(--success);
+  transform: translate(25%, 25%);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.avatar[data-status="online"]::after {
+  opacity: 1;
+  background-color: var(--success);
+}
+
+.avatar[data-status="away"]::after {
+  opacity: 1;
+  background-color: var(--warning);
+}
+
+.avatar[data-status="offline"]::after {
+  opacity: 1;
+  background-color: var(--text-tertiary);
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .avatar {
+    border-width: 3px;
+  }
+  
+  .avatar[data-size="xl"] {
+    border-width: 4px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .avatar,
+  .image,
+  .skeleton {
+    transition: none;
+    animation: none;
+  }
+  
+  .interactive:hover,
+  .interactive:active {
+    transform: none;
+  }
+}

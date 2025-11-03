@@ -1,0 +1,253 @@
+/* Gallery Grid Container */
+.container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+}
+
+.emptyContent {
+  max-width: 400px;
+}
+
+.emptyTitle {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
+
+.emptyDescription {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Bulk Controls */
+.bulkControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.bulkInfo {
+  flex: 1;
+}
+
+.selectionCount {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.bulkActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.bulkButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--accent-primary);
+  color: white;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bulkButton:hover {
+  background: var(--accent-tertiary);
+  transform: translateY(-1px);
+}
+
+.bulkButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.bulkButtonDanger {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.bulkButtonDanger:hover {
+  background: #b91c1c;
+}
+
+.bulkButtonSecondary {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.bulkButtonSecondary:hover {
+  background: var(--bg-tertiary);
+}
+
+/* Mode Controls */
+.modeControls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.modeButtons {
+  display: flex;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.modeButton {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-right: 1px solid var(--border);
+}
+
+.modeButton:last-child {
+  border-right: none;
+}
+
+.modeButton:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.modeButtonActive {
+  background: var(--accent-primary);
+  color: white;
+}
+
+.modeButtonActive:hover {
+  background: var(--accent-tertiary);
+}
+
+/* Image Grid */
+.grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Media Card Wrapper */
+.mediaCardWrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Metadata Overlay */
+.metadata {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.75rem;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.6) 50%,
+    transparent 100%
+  );
+  color: white;
+  font-size: var(--font-size-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.metadata .date {
+  font-weight: 500;
+}
+
+.metadata .uploader {
+  opacity: 0.9;
+  font-size: var(--font-size-xs);
+}
+
+/* Caption Input */
+.captionInput {
+  margin-top: 0.5rem;
+}
+
+.captionField {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease;
+}
+
+.captionField:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb), 0.1);
+}
+
+.captionField::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Responsive Grid */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .bulkControls {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .bulkActions {
+    justify-content: center;
+  }
+
+  .modeButtons {
+    width: 100%;
+  }
+
+  .modeButton {
+    flex: 1;
+  }
+}

@@ -1,0 +1,1 @@
+export { EditableImage } from './EditableImage'

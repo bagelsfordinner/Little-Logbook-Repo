@@ -1,0 +1,206 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 100%;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Base Input Styles */
+.input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-weight: 400;
+  transition: all var(--transition-base);
+  outline: none;
+}
+
+/* Size Variants */
+.input[data-size="sm"] {
+  min-height: 36px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.input[data-size="md"] {
+  min-height: 44px;
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-base);
+}
+
+.input[data-size="lg"] {
+  min-height: 52px;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  font-size: var(--font-size-lg);
+}
+
+/* Focus State */
+.input:focus {
+  border-color: var(--success);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 20%, transparent);
+}
+
+/* Hover State */
+.input:hover:not(:disabled):not(:focus) {
+  border-color: var(--border);
+}
+
+/* Error State */
+.input[data-error="true"],
+.input.error {
+  border-color: var(--error);
+}
+
+.input[data-error="true"]:focus,
+.input.error:focus {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--error) 20%, transparent);
+}
+
+/* Disabled State */
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--bg-tertiary);
+}
+
+/* Password Input with Icon */
+.input.withIcon {
+  padding-right: 44px;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  min-width: 24px;
+  transition: all 0.2s ease;
+}
+
+.passwordToggle:hover:not(:disabled) {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.passwordToggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Full Width */
+.fullWidth {
+  width: 100%;
+}
+
+/* Error Message */
+.errorMessage {
+  color: var(--error);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  margin-top: var(--spacing-xs);
+}
+
+/* Placeholder Styles */
+.input::placeholder {
+  color: var(--text-tertiary);
+  opacity: 1;
+}
+
+/* Autofill Styles */
+.input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-primary) inset;
+  -webkit-text-fill-color: var(--text-primary);
+}
+
+/* Number Input Arrows */
+.input[type="number"]::-webkit-outer-spin-button,
+.input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Search Input */
+.input[type="search"]::-webkit-search-decoration,
+.input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+/* File Input */
+.input[type="file"] {
+  padding: var(--spacing-sm);
+  cursor: pointer;
+}
+
+.input[type="file"]::-webkit-file-upload-button {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  margin-right: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-md);
+  transition: all var(--transition-base);
+}
+
+.input[type="file"]::-webkit-file-upload-button:hover {
+  background-color: var(--bg-tertiary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .input {
+    min-height: 48px; /* Larger touch targets on mobile */
+  }
+  
+  .input[data-size="sm"] {
+    min-height: 40px;
+  }
+  
+  .input[data-size="lg"] {
+    min-height: 56px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .input {
+    border-width: 2px;
+  }
+  
+  .input:focus {
+    outline: 2px solid var(--success);
+    outline-offset: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .input {
+    transition: none;
+  }
+}

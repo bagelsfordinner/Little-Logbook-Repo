@@ -1,0 +1,82 @@
+.editable {
+  cursor: pointer;
+  position: relative;
+  min-height: 1.2em;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+.editable:hover {
+  background-color: var(--bg-tertiary);
+  outline: 2px dashed var(--accent-primary);
+}
+
+.editable[data-placeholder="true"] {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.editingContainer {
+  position: relative;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  border: 2px solid var(--accent-primary);
+  border-radius: 4px;
+  padding: 8px;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  outline: none;
+  resize: vertical;
+}
+
+.input:focus {
+  border-color: var(--accent-tertiary);
+  box-shadow: var(--shadow-md);
+}
+
+.editingControls {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.saveButton {
+  background: var(--accent-primary);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.saveButton:hover {
+  background: var(--accent-tertiary);
+}
+
+.cancelButton {
+  background: var(--text-secondary);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cancelButton:hover {
+  background: var(--text-tertiary);
+}
+
+.editing {
+  /* Styles for when in editing mode */
+}

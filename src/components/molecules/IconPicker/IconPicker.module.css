@@ -1,0 +1,182 @@
+/* Non-edit mode: static square with icon */
+.iconDisplay {
+  width: 2rem;
+  height: 2rem;
+  background: var(--bg-quaternary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconDisplay svg {
+  color: var(--accent-primary) !important;
+  fill: var(--accent-primary) !important;
+  stroke: var(--accent-primary) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
+/* Force icon visibility in non-edit mode */
+.iconDisplay * {
+  color: var(--accent-primary) !important;
+  fill: var(--accent-primary) !important;
+  stroke: var(--accent-primary) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+
+/* Edit mode: clickable square with icon */
+.clickableIcon {
+  width: 2rem;
+  height: 2rem;
+  background: var(--bg-quaternary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--accent-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clickableIcon:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+}
+
+/* Modal styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  max-width: 90vw;
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 1001;
+  border: 1px solid var(--border);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.modalClose {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.modalClose:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.modalGrid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0.5rem;
+  padding: 1.5rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.modalIconOption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modalIconOption:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.modalSelected {
+  background: var(--accent-primary) !important;
+  border-color: var(--accent-primary) !important;
+  color: var(--bg-primary) !important;
+}
+
+.modalSelected:hover {
+  background: var(--accent-tertiary) !important;
+  border-color: var(--accent-tertiary) !important;
+  transform: translateY(-1px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .modal {
+    width: 350px;
+  }
+
+  .modalGrid {
+    grid-template-columns: repeat(7, 1fr);
+    padding: 1rem;
+  }
+
+  .modalIconOption {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    width: 300px;
+  }
+
+  .modalGrid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .modalIconOption {
+    width: 2rem;
+    height: 2rem;
+  }
+}

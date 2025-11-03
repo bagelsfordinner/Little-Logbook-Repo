@@ -1,0 +1,27 @@
+.icon {
+  display: inline-block;
+  color: currentColor;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+/* Size variants */
+.icon.xs {
+  width: 12px;
+  height: 12px;
+}
+
+.icon.sm {
+  width: 16px;
+  height: 16px;
+}
+
+.icon.md {
+  width: 20px;
+  height: 20px;
+}
+
+.icon.lg {
+  width: 24px;
+  height: 24px;
+}

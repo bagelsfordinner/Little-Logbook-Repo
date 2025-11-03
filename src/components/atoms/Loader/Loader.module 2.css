@@ -1,0 +1,198 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+}
+
+.loader {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Spinner Loader */
+.spinner {
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top: 2px solid var(--accent-primary);
+  border-right: 2px solid var(--accent-primary);
+  background: transparent;
+}
+
+.spinner[data-size="sm"] {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+.spinner[data-size="md"] {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
+
+.spinner[data-size="lg"] {
+  width: 48px;
+  height: 48px;
+  border-width: 4px;
+}
+
+/* Pulse Loader */
+.pulse {
+  border-radius: 50%;
+  background: var(--accent-primary);
+}
+
+.pulse[data-size="sm"] {
+  width: 20px;
+  height: 20px;
+}
+
+.pulse[data-size="md"] {
+  width: 32px;
+  height: 32px;
+}
+
+.pulse[data-size="lg"] {
+  width: 48px;
+  height: 48px;
+}
+
+/* Dots Loader */
+.dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.dot {
+  border-radius: 50%;
+  background: var(--accent-primary);
+}
+
+.dots[data-size="sm"] .dot {
+  width: 6px;
+  height: 6px;
+}
+
+.dots[data-size="md"] .dot {
+  width: 8px;
+  height: 8px;
+}
+
+.dots[data-size="lg"] .dot {
+  width: 12px;
+  height: 12px;
+}
+
+/* Logbook Loader (Brand-specific) */
+.logbook {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.bookCover {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  border-radius: 2px;
+  position: relative;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.bookPages {
+  position: absolute;
+  background: var(--bg-primary);
+  border-radius: 1px;
+  border: 1px solid var(--border-light);
+}
+
+.logbook[data-size="sm"] .bookCover {
+  width: 16px;
+  height: 20px;
+}
+
+.logbook[data-size="sm"] .bookPages {
+  width: 12px;
+  height: 16px;
+  right: 2px;
+  top: 2px;
+}
+
+.logbook[data-size="md"] .bookCover {
+  width: 24px;
+  height: 32px;
+}
+
+.logbook[data-size="md"] .bookPages {
+  width: 18px;
+  height: 24px;
+  right: 3px;
+  top: 4px;
+}
+
+.logbook[data-size="lg"] .bookCover {
+  width: 36px;
+  height: 48px;
+}
+
+.logbook[data-size="lg"] .bookPages {
+  width: 28px;
+  height: 36px;
+  right: 4px;
+  top: 6px;
+}
+
+/* Text */
+.text {
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+  font-weight: 500;
+  font-family: var(--font-body);
+}
+
+.text[data-size="sm"] {
+  font-size: var(--font-size-xs);
+}
+
+.text[data-size="md"] {
+  font-size: var(--font-size-sm);
+}
+
+.text[data-size="lg"] {
+  font-size: var(--font-size-base);
+}
+
+/* Loading overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+    border: 2px solid var(--accent-primary);
+    border-radius: 50%;
+  }
+}

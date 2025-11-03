@@ -1,0 +1,98 @@
+/* Default theme (Forest Light) */
+:root {
+  --bg-primary: #fafaf8;
+  --bg-secondary: #f0f2ed;
+  --bg-tertiary: #e5e9df;
+  --bg-quaternary: #d4dac9;
+  --text-primary: #2a3326;
+  --text-secondary: #5a6352;
+  --text-tertiary: #798174;
+  --accent-primary: #6b8e6f;
+  --accent-secondary: #8fac92;
+  --accent-tertiary: #4a6b4e;
+  --border: #d4dac9;
+  --border-light: #e8edd9;
+  --shadow: rgba(42, 51, 38, 0.1);
+  
+  /* Component specific colors */
+  --progress-bg: #e5e9df;
+  --progress-fill: #6b8e6f;
+  --badge-bg: #e5e9df;
+  --section-bg: #f0f2ed;
+  --spacing-demo: #6b8e6f;
+}
+
+/* Forest Dark Theme */
+html[data-theme="forest-dark"] {
+  --bg-primary: #1a1f18;
+  --bg-secondary: #242b21;
+  --bg-tertiary: #2f3a2c;
+  --bg-quaternary: #3d4839;
+  --text-primary: #e8ede5;
+  --text-secondary: #b8c2b3;
+  --text-tertiary: #9ba59a;
+  --accent-primary: #8fac92;
+  --accent-secondary: #6b8e6f;
+  --accent-tertiary: #a8c4ab;
+  --border: #3d4839;
+  --border-light: #4a5446;
+  --shadow: rgba(0, 0, 0, 0.3);
+  
+  /* Component specific colors */
+  --progress-bg: #2f3a2c;
+  --progress-fill: #8fac92;
+  --badge-bg: #2f3a2c;
+  --section-bg: #242b21;
+  --spacing-demo: #8fac92;
+}
+
+/* Soft Pastels Theme */
+html[data-theme="soft-pastels"] {
+  --bg-primary: #fdfcfb;
+  --bg-secondary: #f7f4f2;
+  --bg-tertiary: #efe9e5;
+  --bg-quaternary: #e0dad5;
+  --text-primary: #3d3935;
+  --text-secondary: #6b6662;
+  --text-tertiary: #8a847f;
+  --accent-primary: #d4a574;
+  --accent-secondary: #c88b8b;
+  --accent-tertiary: #b08956;
+  --border: #e0dad5;
+  --border-light: #eae4df;
+  --shadow: rgba(61, 57, 53, 0.08);
+  
+  /* Component specific colors */
+  --progress-bg: #efe9e5;
+  --progress-fill: #d4a574;
+  --badge-bg: #efe9e5;
+  --section-bg: #f7f4f2;
+  --spacing-demo: #d4a574;
+}
+
+
+/* Touch-friendly minimum sizes */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Smooth animations */
+* {
+  transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

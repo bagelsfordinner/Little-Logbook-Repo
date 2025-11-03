@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.progressBar {
+  width: 100%;
+  background: var(--bg-quaternary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.progressBar.sm {
+  height: 4px;
+}
+
+.progressBar.md {
+  height: 8px;
+}
+
+.progressBar.lg {
+  height: 12px;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  transition: width 0.3s ease;
+  border-radius: inherit;
+}
+
+.label {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+  font-weight: 500;
+}

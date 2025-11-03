@@ -1,0 +1,56 @@
+.label {
+  display: inline-block;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: var(--spacing-xs);
+  cursor: pointer;
+  transition: color var(--transition-base);
+}
+
+/* Size Variants */
+.label[data-size="sm"] {
+  font-size: var(--font-size-sm);
+}
+
+.label[data-size="md"] {
+  font-size: var(--font-size-base);
+}
+
+.label[data-size="lg"] {
+  font-size: var(--font-size-lg);
+}
+
+/* Required Indicator */
+.required {
+  color: var(--error);
+  margin-left: var(--spacing-xs);
+  font-weight: 600;
+}
+
+/* Hover State */
+.label:hover {
+  color: var(--text-secondary);
+}
+
+/* Disabled State - when associated input is disabled */
+.label:has(+ input:disabled),
+.label:has(+ *:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Accessibility */
+.label:focus-within {
+  color: var(--accent-primary);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .label {
+    font-weight: 600;
+  }
+  
+  .required {
+    font-weight: 700;
+  }
+}

@@ -1,0 +1,121 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-lg);
+}
+
+.dialog {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-width: 480px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.dialog[data-variant="danger"] {
+  border-top: 4px solid var(--error);
+}
+
+.dialog[data-variant="warning"] {
+  border-top: 4px solid var(--warning);
+}
+
+.header {
+  padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-lg);
+  border-bottom: 1px solid var(--border);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.content {
+  padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.message {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-xl) var(--spacing-xl);
+  justify-content: flex-end;
+  border-top: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .backdrop {
+    padding: var(--spacing-md);
+  }
+
+  .dialog {
+    max-width: none;
+    width: 100%;
+  }
+
+  .header {
+    padding: var(--spacing-lg);
+  }
+
+  .content {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+    padding: var(--spacing-lg);
+    gap: var(--spacing-sm);
+  }
+
+  .actions button {
+    width: 100%;
+  }
+
+  .title {
+    font-size: var(--font-size-lg);
+  }
+
+  .message {
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .dialog {
+    border-width: 2px;
+  }
+
+  .backdrop {
+    background: rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .dialog {
+    animation: none;
+  }
+}
