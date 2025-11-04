@@ -205,9 +205,10 @@ export function ContentProvider({
   }, [userRole])
 
   // Check if section is visible
-  const isSectionVisible = useCallback((path: string) => {
+  const isSectionVisible = useCallback((path: string): boolean => {
     const visibilityPath = `${path}.visible`
-    return getContent(visibilityPath, true) // Default to visible
+    const visibility = getContent(visibilityPath, true) // Default to visible
+    return Boolean(visibility)
   }, [getContent])
 
   // Toggle section visibility
