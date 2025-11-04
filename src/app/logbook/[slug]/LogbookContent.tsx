@@ -16,6 +16,7 @@ import styles from './page.module.css'
 
 interface LogbookContentProps {
   logbook: {
+    id: string
     slug: string
     name: string
     baby_name?: string
