@@ -3,6 +3,8 @@
  * Used to handle unknown types and type assertions safely
  */
 
+import type { SectionData } from '@/lib/constants/pageSections'
+
 export const safeString = (value: unknown): string => {
   if (value === null || value === undefined) return ''
   return String(value)
@@ -36,10 +38,6 @@ export const safeArray = (value: unknown): unknown[] => {
 }
 
 // Section-specific type guards
-export interface SectionData {
-  visible?: boolean
-  [key: string]: unknown
-}
 
 export const ensureSectionData = (value: unknown): SectionData => {
   const obj = safeObject(value)
