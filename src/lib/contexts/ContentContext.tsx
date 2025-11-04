@@ -88,7 +88,7 @@ export function ContentProvider({
         const value = obj[key]
         
         if (value && typeof value === 'object' && !Array.isArray(value) && value.constructor === Object) {
-          flattenContent(value, path)
+          flattenContent(value as Record<string, unknown>, path)
         } else {
           // Determine content type
           let type: ContentType = 'text'
