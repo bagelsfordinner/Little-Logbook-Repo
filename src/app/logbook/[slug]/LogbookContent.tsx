@@ -171,8 +171,6 @@ export function LogbookContent({ logbook, userRole, sections: initialSections, s
     window.location.href = '/dashboard'
   }
 
-  // Get page settings from logbook data - stored under admin page type
-  const pageSettings = (logbook.page_sections?.admin as Record<string, unknown>)?.pageSettings as Record<string, { visible?: boolean }> || {}
 
   // Show loading state if sections are not available
   if (!sections && loading) {
@@ -216,7 +214,6 @@ export function LogbookContent({ logbook, userRole, sections: initialSections, s
             userName="Current User" // This should come from auth
             userRole={(userRole as 'parent' | 'family' | 'friend') || 'friend'}
             currentPath="" // This should be determined from router
-            pageSettings={pageSettings}
             onSignOut={handleSignOut}
             onDashboard={handleDashboard}
           />

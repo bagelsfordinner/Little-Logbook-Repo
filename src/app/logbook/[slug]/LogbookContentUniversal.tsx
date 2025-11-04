@@ -14,6 +14,7 @@ import styles from './page.module.css'
 
 interface LogbookContentUniversalProps {
   logbook: {
+    id: string
     slug: string
     name: string
     baby_name?: string
@@ -219,16 +220,6 @@ export function LogbookContentUniversal({
   initialContent = {},
   stats 
 }: LogbookContentUniversalProps) {
-  const handleSignOut = () => {
-    window.location.href = '/login'
-  }
-
-  const handleDashboard = () => {
-    window.location.href = '/dashboard'
-  }
-
-  // Get page settings from logbook data - stored under admin page type
-  const pageSettings = (logbook.page_sections?.admin as Record<string, unknown>)?.pageSettings as Record<string, { visible?: boolean }> || {}
 
   // Define sections for the edit panel
   const sections = [
@@ -270,9 +261,6 @@ export function LogbookContentUniversal({
             userName="Current User" // This should come from auth
             userRole={(userRole as 'parent' | 'family' | 'friend') || 'friend'}
             currentPath="" // This should be determined from router
-            pageSettings={pageSettings}
-            onSignOut={handleSignOut}
-            onDashboard={handleDashboard}
           />
           
           {/* Hero Section */}

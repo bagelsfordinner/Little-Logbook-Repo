@@ -30,6 +30,7 @@ interface HelpItem {
 
 interface HelpContentUniversalProps {
   logbook: {
+    id: string
     slug: string
     name: string
     baby_name?: string
@@ -722,16 +723,7 @@ export function HelpContentUniversal({
   userRole, 
   initialContent = {}
 }: HelpContentUniversalProps) {
-  const handleSignOut = () => {
-    window.location.href = '/login'
-  }
 
-  const handleDashboard = () => {
-    window.location.href = '/dashboard'
-  }
-
-  // Get page settings from logbook data - stored under admin page type
-  const pageSettings = (logbook.page_sections?.admin as Record<string, unknown>)?.pageSettings as Record<string, { visible?: boolean }> || {}
 
   // Define sections for the edit panel
   const sections = [
@@ -788,9 +780,6 @@ export function HelpContentUniversal({
             userName="Current User"
             userRole={(userRole as 'parent' | 'family' | 'friend') || 'friend'}
             currentPath="Help"
-            pageSettings={pageSettings}
-            onSignOut={handleSignOut}
-            onDashboard={handleDashboard}
           />
           
           {/* Page Header */}

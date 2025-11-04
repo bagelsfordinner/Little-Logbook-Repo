@@ -120,7 +120,7 @@ export default function UsageDashboard({
       <div className={styles.header}>
         <h2 className={styles.title}>Usage Overview</h2>
         <Button 
-          variant="outline" 
+          variant="ghost" 
           size="sm"
           onClick={handleManageBilling}
           disabled={isPortalLoading}
@@ -168,7 +168,7 @@ export default function UsageDashboard({
         
         <UsageCard
           title="Storage"
-          icon="hard-drive"
+          icon="archive"
           current={formatBytes(usage.storage_used_bytes)}
           limit={formatLimitValue('storage_gb', limits.storage_gb)}
           percent={usageStatus.storageUsagePercent}
@@ -202,14 +202,14 @@ export default function UsageDashboard({
           className={styles.upgradePrompt}
         >
           <div className={styles.upgradeContent}>
-            <Icon name="arrow-up" size="lg" className={styles.upgradeIcon} />
+            <Icon name="chevron-up" size="lg" className={styles.upgradeIcon} />
             <div className={styles.upgradeText}>
               <h3>Time to upgrade!</h3>
               <p>You&apos;ve reached your plan limits. Upgrade to continue adding memories.</p>
             </div>
-            <Button variant="primary" href="/pricing">
+            <a href="/pricing" className="btn btn-primary">
               View Plans
-            </Button>
+            </a>
           </div>
         </motion.div>
       )}
@@ -259,8 +259,6 @@ function UsageCard({ title, icon, current, limit, percent, description }: UsageC
             <ProgressBar
               value={displayPercent}
               max={100}
-              color={getUsageColor(displayPercent)}
-              height={8}
               className={styles.progress}
             />
             <span className={styles.percent}>{Math.round(displayPercent)}%</span>

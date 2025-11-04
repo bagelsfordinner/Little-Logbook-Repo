@@ -6,7 +6,7 @@ import styles from './Input.module.css'
 
 export type InputSize = 'sm' | 'md' | 'lg'
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   error?: string
   size?: InputSize
   fullWidth?: boolean

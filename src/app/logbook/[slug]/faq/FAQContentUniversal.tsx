@@ -255,17 +255,6 @@ export function FAQContentUniversal({
   userRole, 
   initialContent = {}
 }: FAQContentUniversalProps) {
-  const handleSignOut = () => {
-    window.location.href = '/login'
-  }
-
-  const handleDashboard = () => {
-    window.location.href = '/dashboard'
-  }
-
-  const handleBack = () => {
-    window.location.href = `/logbook/${logbook.slug}`
-  }
 
   // Define sections for the edit panel
   const sections = [

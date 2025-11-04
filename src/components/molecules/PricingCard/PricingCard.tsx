@@ -140,7 +140,7 @@ export default function PricingCard({
         <ul className={styles.limitsList}>
           {limits.map(([key, value]) => (
             <li key={key} className={styles.limit}>
-              <Icon name="info" size="sm" className={styles.infoIcon} />
+              <Icon name="help-circle" size="sm" className={styles.infoIcon} />
               <span className={styles.limitLabel}>
                 {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
               </span>
@@ -164,7 +164,7 @@ export default function PricingCard({
 
       <div className={styles.action}>
         <Button
-          variant={isPopular ? 'primary' : isCurrentPlan ? 'secondary' : 'outline'}
+          variant={isPopular ? 'primary' : isCurrentPlan ? 'secondary' : 'ghost'}
           fullWidth
           disabled={isLoading}
           onClick={handleSelectPlan}

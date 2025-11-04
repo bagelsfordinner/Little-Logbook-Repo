@@ -298,7 +298,7 @@ export function Editable({
     }
 
     // Default text display
-    const displayValue = content || placeholder || 'Click to edit...'
+    const displayValue = getStringContent(content) || placeholder || 'Click to edit...'
     const isEmpty = !content
 
     if (children) {

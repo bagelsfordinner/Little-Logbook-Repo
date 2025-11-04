@@ -4,6 +4,12 @@ import { useState, useRef, useEffect } from 'react'
 import { useContent } from '@/lib/contexts/ContentContext'
 import styles from './EditableText.module.css'
 
+// Type-safe content helper
+const getStringContent = (content: unknown): string => {
+  if (content === null || content === undefined) return ''
+  return String(content)
+}
+
 interface EditableTextProps {
   path: string
   fallback?: string
@@ -24,19 +30,20 @@ export function EditableText({
   const { getContent, updateContent, isEditMode, userRole } = useContent()
   const [isEditing, setIsEditing] = useState(false)
   const [value, setValue] = useState('')
-  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const currentValue = getContent(path, fallback)
   const canEdit = isEditMode && userRole === 'parent'
 
   useEffect(() => {
-    setValue(currentValue)
+    setValue(getStringContent(currentValue))
   }, [currentValue])
 
   const handleClick = () => {
     if (canEdit && !isEditing) {
       setIsEditing(true)
-      setValue(currentValue)
+      setValue(getStringContent(currentValue))
     }
   }
 
@@ -48,7 +55,7 @@ export function EditableText({
   }
 
   const handleCancel = () => {
-    setValue(currentValue)
+    setValue(getStringContent(currentValue))
     setIsEditing(false)
   }
 
@@ -62,16 +69,17 @@ export function EditableText({
   }
 
   useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus()
-      if (inputRef.current instanceof HTMLInputElement) {
-        inputRef.current.select()
-      } else {
+    if (isEditing) {
+      if (multiline && textareaRef.current) {
+        textareaRef.current.focus()
         // For textarea, select all text
-        inputRef.current.setSelectionRange(0, inputRef.current.value.length)
+        textareaRef.current.setSelectionRange(0, textareaRef.current.value.length)
+      } else if (!multiline && inputRef.current) {
+        inputRef.current.focus()
+        inputRef.current.select()
       }
     }
-  }, [isEditing])
+  }, [isEditing, multiline])
 
   const editableClasses = [
     className,
@@ -80,20 +88,30 @@ export function EditableText({
   ].filter(Boolean).join(' ')
 
   if (isEditing) {
-    const InputComponent = multiline ? 'textarea' : 'input'
-    
     return (
       <div className={styles.editingContainer}>
-        <InputComponent
-          ref={inputRef}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onBlur={handleSave}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          className={`${editableClasses} ${styles.input}`}
-          rows={multiline ? 4 : undefined}
-        />
+        {multiline ? (
+          <textarea
+            ref={textareaRef}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onBlur={handleSave}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            className={`${editableClasses} ${styles.input}`}
+            rows={4}
+          />
+        ) : (
+          <input
+            ref={inputRef}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onBlur={handleSave}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            className={`${editableClasses} ${styles.input}`}
+          />
+        )}
         <div className={styles.editingControls}>
           <button 
             onClick={handleSave}
@@ -114,7 +132,7 @@ export function EditableText({
     )
   }
 
-  const displayValue = currentValue || placeholder
+  const displayValue = getStringContent(currentValue) || placeholder
   const Element = element
 
   return (

@@ -193,8 +193,6 @@ export function GalleryContentUniversal({ logbook, userRole }: GalleryContentUni
     window.location.href = '/dashboard'
   }
 
-  // Get page settings from logbook data - stored under admin page type
-  const pageSettings = (logbook.page_sections as Record<string, Record<string, unknown>>)?.admin?.pageSettings as Record<string, { visible?: boolean }> || {}
 
   const editPanelSections = [
     {
