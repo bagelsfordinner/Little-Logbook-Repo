@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { PageType, SectionData, DEFAULT_SECTIONS } from '@/lib/constants/pageSections'
+import { ensureSectionData } from '@/lib/utils/typeUtils'
 import { SectionToggle } from '@/components/molecules/SectionToggle'
 import { Button } from '@/components/atoms/Button'
 import { Icon } from '@/components/atoms/Icon'
@@ -220,7 +221,7 @@ export function SectionManager({
 
       <div className={styles.sections}>
         {sectionKeys.map(sectionKey => {
-          const sectionData = sections[sectionKey] || (defaultSections as Record<string, unknown>)[sectionKey]
+          const sectionData = ensureSectionData(sections[sectionKey] || (defaultSections as Record<string, unknown>)[sectionKey])
           const displayName = getSectionDisplayName(pageType, sectionKey)
           const description = getSectionDescription(pageType, sectionKey)
           const editableFields = getEditableFields(pageType, sectionKey, sectionData)

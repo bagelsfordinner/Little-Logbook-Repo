@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react'
+import { safeBoolean } from '@/lib/utils/typeUtils'
 
 // Content types that can be edited
 export type ContentType = 'text' | 'textarea' | 'image' | 'boolean' | 'array' | 'number'
@@ -208,7 +209,7 @@ export function ContentProvider({
   const isSectionVisible = useCallback((path: string): boolean => {
     const visibilityPath = `${path}.visible`
     const visibility = getContent(visibilityPath, true) // Default to visible
-    return Boolean(visibility)
+    return safeBoolean(visibility)
   }, [getContent])
 
   // Toggle section visibility

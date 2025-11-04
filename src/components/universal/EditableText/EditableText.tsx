@@ -2,13 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useContent } from '@/lib/contexts/ContentContext'
+import { safeString } from '@/lib/utils/typeUtils'
 import styles from './EditableText.module.css'
-
-// Type-safe content helper
-const getStringContent = (content: unknown): string => {
-  if (content === null || content === undefined) return ''
-  return String(content)
-}
 
 interface EditableTextProps {
   path: string
@@ -37,13 +32,13 @@ export function EditableText({
   const canEdit = isEditMode && userRole === 'parent'
 
   useEffect(() => {
-    setValue(getStringContent(currentValue))
+    setValue(safeString(currentValue))
   }, [currentValue])
 
   const handleClick = () => {
     if (canEdit && !isEditing) {
       setIsEditing(true)
-      setValue(getStringContent(currentValue))
+      setValue(safeString(currentValue))
     }
   }
 
@@ -55,7 +50,7 @@ export function EditableText({
   }
 
   const handleCancel = () => {
-    setValue(getStringContent(currentValue))
+    setValue(safeString(currentValue))
     setIsEditing(false)
   }
 
@@ -132,7 +127,7 @@ export function EditableText({
     )
   }
 
-  const displayValue = getStringContent(currentValue) || placeholder
+  const displayValue = safeString(currentValue) || placeholder
   const Element = element
 
   return (

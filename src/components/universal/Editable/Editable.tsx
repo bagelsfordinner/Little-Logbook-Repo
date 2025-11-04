@@ -5,6 +5,7 @@ import { useContent, ContentType } from '@/lib/contexts/ContentContext'
 import { uploadImageToLogbook } from '@/app/actions/imageUpload'
 import { Icon } from '@/components/atoms/Icon'
 import Image from 'next/image'
+import { safeString, safeBoolean } from '@/lib/utils/typeUtils'
 import styles from './Editable.module.css'
 
 interface EditableProps {
@@ -16,18 +17,6 @@ interface EditableProps {
   placeholder?: string
   multiline?: boolean
   allowedFormats?: string[]
-}
-
-// Type-safe content helpers
-const getStringContent = (content: unknown): string => {
-  if (content === null || content === undefined) return ''
-  return String(content)
-}
-
-const getBooleanContent = (content: unknown): boolean => {
-  if (typeof content === 'boolean') return content
-  if (typeof content === 'string') return content.toLowerCase() === 'true'
-  return Boolean(content)
 }
 
 
@@ -63,7 +52,7 @@ export function Editable({
   // Initialize temp value when editing starts
   useEffect(() => {
     if (isEditing) {
-      setTempValue(getStringContent(content))
+      setTempValue(safeString(content))
     }
   }, [isEditing, content])
 
@@ -107,7 +96,7 @@ export function Editable({
   }
 
   const handleCancel = () => {
-    setTempValue(getStringContent(content))
+    setTempValue(safeString(content))
     setIsEditing(false)
     setError(null)
   }
@@ -222,7 +211,7 @@ export function Editable({
         <div className={`${styles.booleanContainer} ${showEditable ? styles.editable : ''}`}>
           <input
             type="checkbox"
-            checked={getBooleanContent(content)}
+            checked={safeBoolean(content)}
             onChange={() => {}} // Handled by click
             disabled={!showEditable || isLoading}
             className={styles.booleanInput}
@@ -233,7 +222,7 @@ export function Editable({
     }
 
     if (type === 'image') {
-      const imageSrc = getStringContent(content)
+      const imageSrc = safeString(content)
       return (
         <div className={`${styles.imageContainer} ${showEditable ? styles.editable : ''}`}>
           {children ? (
@@ -298,7 +287,7 @@ export function Editable({
     }
 
     // Default text display
-    const displayValue = getStringContent(content) || placeholder || 'Click to edit...'
+    const displayValue = safeString(content) || placeholder || 'Click to edit...'
     const isEmpty = !content
 
     if (children) {

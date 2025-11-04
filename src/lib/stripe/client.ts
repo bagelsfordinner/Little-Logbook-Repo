@@ -3,7 +3,7 @@ import { stripeSecretKey } from './config'
 
 // Initialize Stripe with secret key (server-side only)
 export const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2024-06-20',
+  apiVersion: '2024-11-20.acacia',
   typescript: true,
 })
 
