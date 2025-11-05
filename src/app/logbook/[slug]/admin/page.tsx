@@ -19,7 +19,7 @@ async function AdminContentWrapper({ slug }: { slug: string }) {
   return (
     <PageTransition>
       <AdminContentUniversal 
-        logbookId={logbook.id} 
+        logbook={logbook} 
         userRole={userRole || 'friend'} 
       />
     </PageTransition>

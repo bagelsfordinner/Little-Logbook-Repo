@@ -4,28 +4,35 @@ import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/atoms/Button'
 import { Badge } from '@/components/atoms/Badge'
 import { Input } from '@/components/atoms/Input'
+import { Icon } from '@/components/atoms/Icon'
+import { Header } from '@/components/organisms/Header'
+import { ContentProvider } from '@/lib/contexts/ContentContext'
 import { createInviteCode, getInviteCodes, deleteInviteCode, type InviteCode } from '@/app/actions/inviteCode'
+import styles from '../page.module.css'
 
 interface AdminContentUniversalProps {
-  logbookId: string
+  logbook: {
+    id: string
+    slug: string
+    name: string
+  }
   userRole: 'parent' | 'family' | 'friend'
 }
 
 export default function AdminContentUniversal({
-  logbookId,
+  logbook,
   userRole
 }: AdminContentUniversalProps) {
-  const [activeTab, setActiveTab] = useState<'members' | 'settings' | 'analytics'>('members')
   const [inviteCodes, setInviteCodes] = useState<InviteCode[]>([])
   const [isCreatingInvite, setIsCreatingInvite] = useState(false)
   const [copySuccess, setCopySuccess] = useState<string | null>(null)
 
   const loadInviteCodes = useCallback(async () => {
-    const result = await getInviteCodes(logbookId)
+    const result = await getInviteCodes(logbook.id)
     if (result.success && result.inviteCodes) {
       setInviteCodes(result.inviteCodes)
     }
-  }, [logbookId])
+  }, [logbook.id])
 
   // Load invite codes when component mounts
   useEffect(() => {
@@ -37,7 +44,7 @@ export default function AdminContentUniversal({
   const handleCreateInvite = async (role: 'family' | 'friend') => {
     setIsCreatingInvite(true)
     try {
-      const result = await createInviteCode(logbookId, role, 5, 30) // 5 uses, expires in 30 days
+      const result = await createInviteCode(logbook.id, role, 5, 30) // 5 uses, expires in 30 days
       if (result.success) {
         await loadInviteCodes() // Refresh the list
       } else {
@@ -89,68 +96,63 @@ export default function AdminContentUniversal({
   // Only parents can access admin content
   if (userRole !== 'parent') {
     return (
-      <div style={{ padding: 'var(--spacing-xl)', textAlign: 'center' }}>
-        <h2>Access Denied</h2>
-        <p>Only logbook parents can access admin settings.</p>
-      </div>
+      <ContentProvider
+        logbookSlug={logbook.slug}
+        pageType="admin"
+        userRole={userRole}
+      >
+        <div className={styles.container}>
+          <Header
+            logbookName={logbook.name}
+            logbookSlug={logbook.slug}
+            logbookId={logbook.id}
+            userName="Current User"
+            userRole={userRole}
+            currentPath="admin"
+          />
+          <div className={styles.content}>
+            <div style={{ padding: '2rem', textAlign: 'center' }}>
+              <h2>Access Denied</h2>
+              <p>Only logbook parents can access admin settings.</p>
+            </div>
+          </div>
+        </div>
+      </ContentProvider>
     )
   }
 
-  const tabs = [
-    { id: 'members' as const, label: 'Members', count: 0 },
-    { id: 'settings' as const, label: 'Settings', count: 0 },
-    { id: 'analytics' as const, label: 'Analytics', count: 0 }
-  ]
-
   return (
-    <div style={{ padding: 'var(--spacing-xl)' }}>
-      <div style={{ marginBottom: 'var(--spacing-xl)' }}>
-        <h1>Admin Dashboard</h1>
-        <p style={{ color: 'var(--text-secondary)' }}>
-          Manage your logbook settings, members, and view analytics.
-        </p>
-      </div>
+    <ContentProvider
+      logbookSlug={logbook.slug}
+      pageType="admin"
+      userRole={userRole}
+    >
+      <div className={styles.container}>
+        <Header
+          logbookName={logbook.name}
+          logbookSlug={logbook.slug}
+          logbookId={logbook.id}
+          userName="Current User"
+          userRole={userRole}
+          currentPath="admin"
+        />
+        <div className={styles.content}>
+          <div style={{ padding: '2rem' }}>
+            <div style={{ marginBottom: '2rem' }}>
+              <h1>Admin Dashboard</h1>
+              <p style={{ color: 'var(--text-secondary)' }}>
+                Manage your logbook members and invite codes.
+              </p>
+            </div>
 
-      {/* Tab Navigation */}
-      <div style={{ 
-        display: 'flex', 
-        gap: 'var(--spacing-md)', 
-        marginBottom: 'var(--spacing-xl)',
-        borderBottom: '1px solid var(--border)'
-      }}>
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            style={{
-              padding: 'var(--spacing-md) var(--spacing-lg)',
-              border: 'none',
-              background: 'none',
-              cursor: 'pointer',
-              borderBottom: activeTab === tab.id ? '2px solid var(--primary)' : '2px solid transparent',
-              color: activeTab === tab.id ? 'var(--primary)' : 'var(--text-secondary)',
-              fontWeight: activeTab === tab.id ? '600' : '400',
-              transition: 'all 0.2s ease'
-            }}
-          >
-            {tab.label}
-            {tab.count > 0 && (
-              <Badge variant="default">
-                {tab.count}
-              </Badge>
-            )}
-          </button>
-        ))}
-      </div>
-
-      {/* Tab Content */}
-      {activeTab === 'members' && (
-        <div style={{ 
-          padding: 'var(--spacing-xl)', 
-          backgroundColor: 'var(--bg-secondary)', 
-          borderRadius: 'var(--radius-lg)',
-          border: '1px solid var(--border)'
-        }}>
+            {/* Invite Codes Section */}
+            <div style={{ 
+              padding: '2rem', 
+              backgroundColor: 'var(--bg-secondary)', 
+              borderRadius: '12px',
+              border: '1px solid var(--border)',
+              marginBottom: '2rem'
+            }}>
           <h3>Invite Family & Friends</h3>
           <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--spacing-lg)' }}>
             Create invite codes to share your logbook with family and friends.
@@ -219,6 +221,7 @@ export default function AdminContentUniversal({
                       onClick={() => handleDeleteInvite(invite.id)}
                       style={{ color: 'var(--error)' }}
                     >
+                      <Icon name="trash" size="xs" />
                       Delete
                     </Button>
                   </div>
@@ -230,7 +233,7 @@ export default function AdminContentUniversal({
                       style={{ flex: 1, fontFamily: 'monospace' }}
                     />
                     <Button 
-                      variant="ghost" 
+                      variant="secondary" 
                       size="sm"
                       onClick={() => copyToClipboard(invite.code, 'code')}
                     >
@@ -245,7 +248,7 @@ export default function AdminContentUniversal({
                       style={{ flex: 1, fontSize: '0.9rem' }}
                     />
                     <Button 
-                      variant="primary" 
+                      variant="secondary" 
                       size="sm"
                       onClick={() => copyToClipboard(generateInviteUrl(invite.code), 'url')}
                     >
@@ -262,54 +265,29 @@ export default function AdminContentUniversal({
               </p>
             </div>
           )}
-        </div>
-      )}
+            </div>
 
-      {activeTab === 'settings' && (
-        <div style={{ 
-          padding: 'var(--spacing-xl)', 
-          backgroundColor: 'var(--bg-secondary)', 
-          borderRadius: 'var(--radius-lg)',
-          border: '1px solid var(--border)'
-        }}>
-          <h3>Logbook Settings</h3>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--spacing-lg)' }}>
-            Configure your logbook preferences and privacy settings.
-          </p>
-          
-          <div style={{ textAlign: 'center', padding: 'var(--spacing-xl)' }}>
-            <p style={{ color: 'var(--text-secondary)' }}>
-              Settings management functionality coming soon...
-            </p>
-            <Button variant="secondary" disabled style={{ marginTop: 'var(--spacing-md)' }}>
-              Edit Settings
-            </Button>
+            {/* User Management Section */}
+            <div style={{ 
+              padding: '2rem', 
+              backgroundColor: 'var(--bg-secondary)', 
+              borderRadius: '12px',
+              border: '1px solid var(--border)'
+            }}>
+              <h3>Current Members</h3>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+                Manage existing logbook members and their roles.
+              </p>
+              
+              <div style={{ textAlign: 'center', padding: '2rem' }}>
+                <p style={{ color: 'var(--text-secondary)' }}>
+                  User management functionality coming soon...
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-      )}
-
-      {activeTab === 'analytics' && (
-        <div style={{ 
-          padding: 'var(--spacing-xl)', 
-          backgroundColor: 'var(--bg-secondary)', 
-          borderRadius: 'var(--radius-lg)',
-          border: '1px solid var(--border)'
-        }}>
-          <h3>Analytics</h3>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--spacing-lg)' }}>
-            View insights about your logbook usage and engagement.
-          </p>
-          
-          <div style={{ textAlign: 'center', padding: 'var(--spacing-xl)' }}>
-            <p style={{ color: 'var(--text-secondary)' }}>
-              Analytics dashboard coming soon...
-            </p>
-            <Button variant="ghost" disabled style={{ marginTop: 'var(--spacing-md)' }}>
-              View Reports
-            </Button>
-          </div>
-        </div>
-      )}
-    </div>
+      </div>
+    </ContentProvider>
   )
 }
