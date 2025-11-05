@@ -122,7 +122,7 @@ function NavigationCards({
               icon={item.icon}
               title={item.title}
               description={item.description}
-              variant={item.id === 'admin' ? 'accent' : 'default'}
+              variant={item.id === 'admin' ? 'inverted' : 'default'}
               onClick={() => window.location.href = item.href}
             />
           </motion.div>

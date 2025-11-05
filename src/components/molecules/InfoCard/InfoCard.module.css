@@ -57,6 +57,11 @@
   color: var(--text-secondary);
 }
 
+.iconWrapper.inverted {
+  background: white;
+  color: var(--accent-primary);
+}
+
 .card.clickable:hover .iconWrapper.default {
   background: var(--accent-primary);
   color: white;
@@ -68,6 +73,11 @@
 
 .card.clickable:hover .iconWrapper.muted {
   background: var(--accent-primary);
+  color: white;
+}
+
+.card.clickable:hover .iconWrapper.inverted {
+  background: var(--accent-secondary);
   color: white;
 }
 
@@ -93,6 +103,26 @@
   font-family: var(--font-body);
   line-height: 1.4;
   overflow-wrap: break-word;
+}
+
+/* Inverted variant - full card styling */
+.card.inverted {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+}
+
+.card.inverted .title {
+  color: white;
+}
+
+.card.inverted .description {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.card.inverted.clickable:hover {
+  background: var(--accent-secondary);
+  border-color: var(--accent-secondary);
 }
 
 /* Responsive Design */

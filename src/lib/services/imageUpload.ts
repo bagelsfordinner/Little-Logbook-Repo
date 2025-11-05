@@ -322,7 +322,7 @@ export async function uploadImage(
 export const getUploadOptionsFor = {
   hero: (): Partial<ImageUploadOptions> => ({
     folder: 'hero-images',
-    maxSizeBytes: 2 * 1024 * 1024, // 2MB for hero images
+    maxSizeBytes: 5 * 1024 * 1024, // 5MB for hero images
     strategy: 'base64' // Reliable for hero images
   }),
   

@@ -3,7 +3,7 @@
 import { Icon, IconName } from '../../atoms/Icon'
 import styles from './InfoCard.module.css'
 
-export type InfoCardVariant = 'default' | 'accent' | 'muted'
+export type InfoCardVariant = 'default' | 'accent' | 'muted' | 'inverted'
 
 interface InfoCardProps {
   icon: IconName
@@ -26,6 +26,7 @@ export default function InfoCard({
 
   const cardClass = [
     styles.card,
+    styles[variant],
     isClickable && styles.clickable,
     className
   ].filter(Boolean).join(' ')
