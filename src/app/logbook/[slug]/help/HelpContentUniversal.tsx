@@ -871,32 +871,34 @@ export function HelpContentUniversal({
               </EditableSection>
             </ConditionalSection>
 
-            {/* Bottom Row */}
-            {/* Gifts for Parents - Medium */}
-            <ConditionalSection
-              path="gifts"
-              className={`${styles.bentoItem} ${styles.medium}`}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-            >
-              <EditableSection path="gifts" showToggle={true}>
-                <GiftsForParentsSection sectionPath="gifts" />
-              </EditableSection>
-            </ConditionalSection>
+            {/* Bottom Row - Flexible Container */}
+            <div className={styles.bottomRowContainer}>
+              {/* Gifts for Parents - Medium */}
+              <ConditionalSection
+                path="gifts"
+                className={`${styles.bentoItem} ${styles.bottomRowItem}`}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+              >
+                <EditableSection path="gifts" showToggle={true}>
+                  <GiftsForParentsSection sectionPath="gifts" />
+                </EditableSection>
+              </ConditionalSection>
 
-            {/* Special Occasions - Medium */}
-            <ConditionalSection
-              path="occasions"
-              className={`${styles.bentoItem} ${styles.medium}`}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.9 }}
-            >
-              <EditableSection path="occasions" showToggle={true}>
-                <SpecialOccasionsSection sectionPath="occasions" />
-              </EditableSection>
-            </ConditionalSection>
+              {/* Special Occasions - Medium */}
+              <ConditionalSection
+                path="occasions"
+                className={`${styles.bentoItem} ${styles.bottomRowItem}`}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.9 }}
+              >
+                <EditableSection path="occasions" showToggle={true}>
+                  <SpecialOccasionsSection sectionPath="occasions" />
+                </EditableSection>
+              </ConditionalSection>
+            </div>
           </motion.div>
 
           {/* Edit Panel */}
