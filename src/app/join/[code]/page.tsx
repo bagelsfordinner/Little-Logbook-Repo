@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { signUpWithInvite, validateInviteCode } from '@/app/actions/auth'
+import { Icon } from '@/components/atoms/Icon'
 import styles from './page.module.css'
 
 const signUpWithInviteSchema = z.object({
@@ -28,6 +29,8 @@ export default function JoinWithCodePage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [validatingCode, setValidatingCode] = useState(true)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [inviteData, setInviteData] = useState<{
     logbookName: string
     role: string
@@ -94,7 +97,14 @@ export default function JoinWithCodePage() {
   if (validatingCode) {
     return (
       <div className={styles.container}>
+        <div className={styles.decorativeElements}>
+          <div className={styles.decorativeCircle1}></div>
+          <div className={styles.decorativeCircle2}></div>
+        </div>
         <div className={styles.loadingCard}>
+          <div className={styles.brandMark}>
+            <Icon name="book-open" size="lg" />
+          </div>
           <div className={styles.spinner}></div>
           <p>Validating invite code...</p>
         </div>
@@ -105,7 +115,14 @@ export default function JoinWithCodePage() {
   if (error && !inviteData) {
     return (
       <div className={styles.container}>
+        <div className={styles.decorativeElements}>
+          <div className={styles.decorativeCircle1}></div>
+          <div className={styles.decorativeCircle2}></div>
+        </div>
         <div className={styles.errorCard}>
+          <div className={styles.brandMark}>
+            <Icon name="book-open" size="lg" />
+          </div>
           <h1 className={styles.errorTitle}>Invalid Invite Code</h1>
           <p className={styles.errorMessage}>{error}</p>
           <div className={styles.errorActions}>
@@ -123,8 +140,15 @@ export default function JoinWithCodePage() {
 
   return (
     <div className={styles.container}>
+      <div className={styles.decorativeElements}>
+        <div className={styles.decorativeCircle1}></div>
+        <div className={styles.decorativeCircle2}></div>
+      </div>
       <div className={styles.formCard}>
         <div className={styles.header}>
+          <div className={styles.brandMark}>
+            <Icon name="book-open" size="lg" />
+          </div>
           <h1 className={styles.title}>Join {inviteData?.logbookName}</h1>
           <p className={styles.subtitle}>
             You&apos;ve been invited to join as a <strong>{inviteData?.role}</strong>
@@ -174,13 +198,23 @@ export default function JoinWithCodePage() {
             <label htmlFor="password" className={styles.label}>
               Password
             </label>
-            <input
-              {...register('password')}
-              type="password"
-              id="password"
-              className={styles.input}
-              placeholder="At least 8 characters"
-            />
+            <div className={styles.passwordInputContainer}>
+              <input
+                {...register('password')}
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                className={styles.input}
+                placeholder="At least 8 characters"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className={styles.passwordToggle}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                <Icon name={showPassword ? 'eye-off' : 'eye'} size="sm" />
+              </button>
+            </div>
             {errors.password && (
               <span className={styles.fieldError}>{errors.password.message}</span>
             )}
@@ -190,13 +224,23 @@ export default function JoinWithCodePage() {
             <label htmlFor="confirmPassword" className={styles.label}>
               Confirm Password
             </label>
-            <input
-              {...register('confirmPassword')}
-              type="password"
-              id="confirmPassword"
-              className={styles.input}
-              placeholder="Re-enter your password"
-            />
+            <div className={styles.passwordInputContainer}>
+              <input
+                {...register('confirmPassword')}
+                type={showConfirmPassword ? 'text' : 'password'}
+                id="confirmPassword"
+                className={styles.input}
+                placeholder="Re-enter your password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className={styles.passwordToggle}
+                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+              >
+                <Icon name={showConfirmPassword ? 'eye-off' : 'eye'} size="sm" />
+              </button>
+            </div>
             {errors.confirmPassword && (
               <span className={styles.fieldError}>{errors.confirmPassword.message}</span>
             )}
