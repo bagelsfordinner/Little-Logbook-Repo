@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import Link from 'next/link'
 import { signIn } from '@/app/actions/auth'
+import { Icon } from '@/components/atoms/Icon'
 import styles from './page.module.css'
 
 const signInSchema = z.object({
@@ -50,8 +51,15 @@ export default function LoginPage() {
 
   return (
     <div className={styles.container}>
+      <div className={styles.decorativeElements}>
+        <div className={styles.decorativeCircle1}></div>
+        <div className={styles.decorativeCircle2}></div>
+      </div>
       <div className={styles.formCard}>
         <div className={styles.header}>
+          <div className={styles.brandMark}>
+            <Icon name="book-open" size="lg" />
+          </div>
           <h1 className={styles.title}>Welcome Back</h1>
           <p className={styles.subtitle}>
             Sign in to your Little Logbook account

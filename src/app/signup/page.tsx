@@ -8,6 +8,7 @@ import { z } from 'zod'
 import { signUp, checkSlugAvailability } from '@/app/actions/auth'
 import { slugify, generateRandomSuffix } from '@/lib/utils/slugify'
 import { useDebounce } from '@/hooks/useDebounce'
+import { Icon } from '@/components/atoms/Icon'
 import styles from './page.module.css'
 
 const signUpSchema = z.object({
@@ -145,8 +146,16 @@ export default function SignUpPage() {
 
   return (
     <div className={styles.container}>
+      <div className={styles.decorativeElements}>
+        <div className={styles.decorativeCircle1}></div>
+        <div className={styles.decorativeCircle2}></div>
+        <div className={styles.decorativeCircle3}></div>
+      </div>
       <div className={styles.formCard}>
         <div className={styles.header}>
+          <div className={styles.brandMark}>
+            <Icon name="book-open" size="lg" />
+          </div>
           <h1 className={styles.title}>Create Your Family Logbook</h1>
           <p className={styles.subtitle}>
             Start documenting your family&apos;s adventures together
