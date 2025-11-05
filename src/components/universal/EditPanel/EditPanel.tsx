@@ -59,7 +59,7 @@ export function EditPanel({ sections }: EditPanelProps) {
     <motion.div
       className={styles.editContainer}
       animate={{
-        right: isEditPanelOpen ? '0px' : '-320px'
+        right: isEditPanelOpen ? '0px' : '-280px'
       }}
       transition={{ type: 'spring', damping: 25, stiffness: 200 }}
     >
@@ -76,44 +76,53 @@ export function EditPanel({ sections }: EditPanelProps) {
       {/* Edit Panel - No overlay, no click-outside-to-close */}
       <div className={styles.panel}>
         {/* Theme Switcher */}
-        <div className={styles.themeSection}>
-          <h3 className={styles.sectionTitle}>Theme</h3>
-          <ThemeSwitcher />
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>
+            <Icon name="settings" size="sm" />
+            Theme
+          </h3>
+          <div className={styles.sectionContent}>
+            <ThemeSwitcher />
+          </div>
         </div>
 
         {/* Instructions */}
-        <div className={styles.instructionsSection}>
-          <p className={styles.instructions}>
-            Click on any text or image to edit it directly. Use the toggles below to show or hide sections. Changes are saved automatically.
-          </p>
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>
+            <Icon name="help-circle" size="sm" />
+            How to Edit
+          </h3>
+          <div className={styles.sectionContent}>
+            <p className={styles.instructions}>
+              Click on any text or image to edit it directly. Use the toggles below to show or hide sections. Changes are saved automatically.
+            </p>
+          </div>
         </div>
 
         {/* Section Visibility */}
-        <div className={styles.sectionsContainer}>
-          <h3 className={styles.sectionTitle}>Page Sections</h3>
-          <div className={styles.sectionList}>
-            {sections.map((section) => {
-              const isVisible = isSectionVisible(section.path)
-              return (
-                <div key={section.path} className={styles.sectionItem}>
-                  <div className={styles.sectionInfo}>
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>
+            <Icon name="grid" size="sm" />
+            Page Sections
+          </h3>
+          <div className={styles.sectionContent}>
+            <div className={styles.sectionList}>
+              {sections.map((section) => {
+                const isVisible = isSectionVisible(section.path)
+                return (
+                  <div key={section.path} className={styles.sectionItem}>
                     <span className={styles.sectionLabel}>{section.label}</span>
-                    {section.description && (
-                      <span className={styles.sectionDescription}>
-                        {section.description}
-                      </span>
-                    )}
+                    <button
+                      className={`${styles.toggle} ${isVisible ? styles.toggleOn : styles.toggleOff}`}
+                      onClick={() => handleToggleSection(section.path)}
+                      aria-label={`${isVisible ? 'Hide' : 'Show'} ${section.label}`}
+                    >
+                      <div className={styles.toggleSlider} />
+                    </button>
                   </div>
-                  <button
-                    className={`${styles.toggle} ${isVisible ? styles.toggleOn : styles.toggleOff}`}
-                    onClick={() => handleToggleSection(section.path)}
-                    aria-label={`${isVisible ? 'Hide' : 'Show'} ${section.label}`}
-                  >
-                    <div className={styles.toggleSlider} />
-                  </button>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
         </div>
       </div>
