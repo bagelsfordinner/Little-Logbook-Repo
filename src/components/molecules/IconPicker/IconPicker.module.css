@@ -13,7 +13,7 @@
 
 .iconDisplay svg {
   color: var(--accent-primary) !important;
-  fill: var(--accent-primary) !important;
+  fill: none !important;
   stroke: var(--accent-primary) !important;
   opacity: 1 !important;
   visibility: visible !important;
@@ -23,7 +23,7 @@
 /* Force icon visibility in non-edit mode */
 .iconDisplay * {
   color: var(--accent-primary) !important;
-  fill: var(--accent-primary) !important;
+  fill: none !important;
   stroke: var(--accent-primary) !important;
   opacity: 1 !important;
   visibility: visible !important;

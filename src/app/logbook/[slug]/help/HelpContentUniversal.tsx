@@ -385,7 +385,7 @@ function EssentialItemsSection({ sectionPath, userRole }: { sectionPath: string,
     if (items && items[index]) {
       const updatedItems = [...items]
       updatedItems[index] = { ...updatedItems[index], icon }
-      await updateContent(`${sectionPath}.items`, updatedItems as unknown as string[])
+      await updateContent(`${sectionPath}.items`, updatedItems)
     }
   }
 
@@ -394,7 +394,7 @@ function EssentialItemsSection({ sectionPath, userRole }: { sectionPath: string,
     if (items && items[index]) {
       const updatedItems = [...items]
       updatedItems[index] = { ...updatedItems[index], max }
-      await updateContent(`${sectionPath}.items`, updatedItems as unknown as string[])
+      await updateContent(`${sectionPath}.items`, updatedItems)
     }
   }
 
@@ -473,7 +473,7 @@ function GiftItem({
       const updatedParents = [...parents]
       const parentGifts = updatedParents[parentIndex].gifts as Record<string, unknown>[]
       parentGifts[index] = { ...parentGifts[index], icon }
-      await updateContent(`${sectionPath}.parents`, updatedParents as unknown as string[])
+      await updateContent(`${sectionPath}.parents`, updatedParents)
     }
   }
 
