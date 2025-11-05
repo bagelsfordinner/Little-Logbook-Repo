@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { getUserLogbooks, getCurrentUser } from '@/app/actions/dashboard'
 import { signOut } from '@/app/actions/auth'
 import { navigateToLogbook } from '@/app/actions/logbook'
+import { Icon } from '@/components/atoms/Icon'
 import type { UserLogbook } from '@/app/actions/dashboard'
 import styles from './page.module.css'
 
@@ -10,14 +11,17 @@ import styles from './page.module.css'
 function DashboardLoading() {
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.skeleton + ' ' + styles.skeletonTitle}></div>
-        <div className={styles.skeleton + ' ' + styles.skeletonButton}></div>
+      <div className={styles.decorativeElements}>
+        <div className={styles.decorativeCircle1}></div>
+        <div className={styles.decorativeCircle2}></div>
+        <div className={styles.decorativeCircle3}></div>
       </div>
-      <div className={styles.grid}>
-        {[1, 2, 3].map(i => (
-          <div key={i} className={styles.skeleton + ' ' + styles.skeletonCard}></div>
-        ))}
+      <div className={styles.loadingContent}>
+        <div className={styles.brandMark}>
+          <Icon name="book-open" size="lg" />
+        </div>
+        <div className={styles.loadingText}>Loading your logbooks...</div>
+        <div className={styles.spinner}></div>
       </div>
     </div>
   )
@@ -85,7 +89,10 @@ function LogbookCard({ logbook }: { logbook: UserLogbook }) {
         </div>
         
         <div className={styles.cardFooter}>
-          <span className={styles.cardAction}>Open Logbook →</span>
+          <span className={styles.cardAction}>
+            <Icon name="external-link" size="sm" />
+            Open Logbook
+          </span>
         </div>
       </button>
     </form>
@@ -96,12 +103,15 @@ function LogbookCard({ logbook }: { logbook: UserLogbook }) {
 function EmptyState() {
   return (
     <div className={styles.emptyState}>
-      <div className={styles.emptyIcon}>📚</div>
+      <div className={styles.emptyIconContainer}>
+        <Icon name="book-open" size="lg" />
+      </div>
       <h3 className={styles.emptyTitle}>No logbooks yet</h3>
       <p className={styles.emptyDescription}>
         Create your first family logbook to start documenting your adventures together.
       </p>
       <a href="/create-logbook" className={styles.primaryButton}>
+        <Icon name="plus-circle" size="sm" />
         Create Your First Logbook
       </a>
     </div>
@@ -121,10 +131,18 @@ async function DashboardContent() {
   if (error) {
     return (
       <div className={styles.container}>
+        <div className={styles.decorativeElements}>
+          <div className={styles.decorativeCircle1}></div>
+          <div className={styles.decorativeCircle2}></div>
+        </div>
         <div className={styles.error}>
+          <div className={styles.errorIconContainer}>
+            <Icon name="alert-circle" size="lg" />
+          </div>
           <h2>Error loading dashboard</h2>
           <p>{error}</p>
           <a href="/dashboard" className={styles.secondaryButton}>
+            <Icon name="refresh-cw" size="sm" />
             Try Again
           </a>
         </div>
@@ -136,9 +154,18 @@ async function DashboardContent() {
 
   return (
     <div className={styles.container}>
+      <div className={styles.decorativeElements}>
+        <div className={styles.decorativeCircle1}></div>
+        <div className={styles.decorativeCircle2}></div>
+        <div className={styles.decorativeCircle3}></div>
+      </div>
+      
       <header className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.headerInfo}>
+            <div className={styles.brandMark}>
+              <Icon name="book-open" size="lg" />
+            </div>
             <h1 className={styles.title}>Welcome back, {user.display_name}</h1>
             <p className={styles.subtitle}>
               {hasLogbooks 
@@ -150,6 +177,7 @@ async function DashboardContent() {
           
           <div className={styles.headerActions}>
             <a href="/create-logbook" className={styles.primaryButton}>
+              <Icon name="plus-circle" size="sm" />
               Create New Logbook
             </a>
             <form action={async () => {
@@ -157,6 +185,7 @@ async function DashboardContent() {
               await signOut()
             }} className={styles.signOutForm}>
               <button type="submit" className={styles.secondaryButton}>
+                <Icon name="user" size="sm" />
                 Sign Out
               </button>
             </form>
