@@ -47,7 +47,7 @@ export default function NotFound() {
                   ease: "easeInOut"
                 }}
               >
-                ❤️
+                <Icon name="heart" size="sm" />
               </motion.div>
             </div>
           </motion.div>
@@ -141,7 +141,7 @@ export default function NotFound() {
                 delay: i * 0.2,
               }}
             >
-              {['📸', '📝', '❤️', '🌟', '📚', '✨'][i]}
+              <Icon name={['camera', 'edit', 'heart', 'star', 'book', 'sparkles'][i]} size="xs" />
             </motion.div>
           ))}
         </div>

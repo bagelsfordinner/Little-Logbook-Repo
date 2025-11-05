@@ -77,11 +77,11 @@ export function EditPanel({ sections }: EditPanelProps) {
       <div className={styles.panel}>
         {/* Theme Switcher */}
         <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>
-            <Icon name="settings" size="sm" />
-            Theme
-          </h3>
-          <div className={styles.sectionContent}>
+          <div className={styles.sectionHeader}>
+            <div className={styles.calloutBar}></div>
+            <h3 className={styles.sectionTitle}>Theme</h3>
+          </div>
+          <div className={styles.sectionCard}>
             <ThemeSwitcher />
           </div>
         </div>

@@ -13,7 +13,7 @@
   position: absolute;
   bottom: 2rem;
   left: -70px;
-  background: var(--bg-tertiary);
+  background: var(--bg-quaternary);
   border: 1px solid var(--border);
   color: var(--text-primary);
   cursor: pointer;
@@ -56,31 +56,38 @@
   gap: 12px;
 }
 
-/* Consistent Section Structure */
+/* Section Structure with Callout Bar */
 .section {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.calloutBar {
+  width: 3px;
+  height: 20px;
+  background: var(--accent-primary);
+  border-radius: 2px;
 }
 
 .sectionTitle {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0 4px;
 }
 
-.sectionContent {
+.sectionCard {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 8px;
+  border-radius: 8px;
+  padding: 12px;
 }
 
 .instructions {
