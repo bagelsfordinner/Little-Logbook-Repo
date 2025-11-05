@@ -457,25 +457,16 @@ function GiftItem({
   item, 
   index, 
   sectionPath, 
-  parentIndex 
+  parentIndex,
+  onIconChange
 }: { 
   item: HelpItem
   index: number
   sectionPath: string
   parentIndex: number
+  onIconChange: (index: number, icon: IconName) => void
 }) {
-  const { updateContent, getContent, isEditMode } = useContent()
-
-  const handleIconChange = async (icon: IconName) => {
-    const parents = getContent(`${sectionPath}.parents`, []) as unknown as Record<string, unknown>[]
-    const parent = parents[parentIndex] as Record<string, unknown>
-    if (parents && parent && parent.gifts && (parent.gifts as Record<string, unknown>[])[index]) {
-      const updatedParents = [...parents]
-      const parentGifts = updatedParents[parentIndex].gifts as Record<string, unknown>[]
-      parentGifts[index] = { ...parentGifts[index], icon }
-      await updateContent(`${sectionPath}.parents`, updatedParents)
-    }
-  }
+  const { isEditMode } = useContent()
 
   return (
     <motion.div
@@ -487,7 +478,7 @@ function GiftItem({
       <div className={styles.giftIcon}>
         <IconPicker
           value={(item.icon as IconName) || 'heart'}
-          onChange={handleIconChange}
+          onChange={(iconName) => onIconChange(index, iconName)}
           asClickable={isEditMode}
           disabled={!isEditMode}
         />
@@ -505,9 +496,20 @@ function GiftItem({
 
 // Gifts for Parents Section
 function GiftsForParentsSection({ sectionPath }: { sectionPath: string }) {
+  const { updateContent, getContent } = useContent()
+  
   const giftTemplate = {
     title: "New Gift Idea",
     icon: "heart" as IconName
+  }
+
+  const handleIconChange = async (parentIndex: number, giftIndex: number, icon: IconName) => {
+    const gifts = getContent(`${sectionPath}.parents.${parentIndex}.gifts`, []) as unknown as HelpItem[]
+    if (gifts && gifts[giftIndex]) {
+      const updatedGifts = [...gifts]
+      updatedGifts[giftIndex] = { ...updatedGifts[giftIndex], icon }
+      await updateContent(`${sectionPath}.parents.${parentIndex}.gifts`, updatedGifts)
+    }
   }
 
   return (
@@ -551,6 +553,7 @@ function GiftsForParentsSection({ sectionPath }: { sectionPath: string }) {
                 index={index}
                 sectionPath={sectionPath}
                 parentIndex={0}
+                onIconChange={(giftIndex, icon) => handleIconChange(0, giftIndex, icon)}
               />
             )}
             className={styles.giftsList}
@@ -579,6 +582,7 @@ function GiftsForParentsSection({ sectionPath }: { sectionPath: string }) {
                 index={index}
                 sectionPath={sectionPath}
                 parentIndex={1}
+                onIconChange={(giftIndex, icon) => handleIconChange(1, giftIndex, icon)}
               />
             )}
             className={styles.giftsList}
