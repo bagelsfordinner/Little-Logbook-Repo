@@ -59,9 +59,9 @@ export function EditPanel({ sections }: EditPanelProps) {
     <motion.div
       className={styles.editContainer}
       animate={{
-        right: isEditPanelOpen ? '0px' : '-250px'
+        right: isEditPanelOpen ? '0px' : '-320px'
       }}
-      transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
+      transition={{ type: 'spring', damping: 25, stiffness: 200 }}
     >
       {/* Tab Edit Button */}
       <button
