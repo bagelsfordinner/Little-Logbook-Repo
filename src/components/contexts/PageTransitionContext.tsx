@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 
 interface PageTransitionContextType {
   isTransitioning: boolean
@@ -25,64 +25,64 @@ interface PageTransitionProviderProps {
 
 export function PageTransitionProvider({ children }: PageTransitionProviderProps) {
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const router = useRouter()
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
+  const pathname = usePathname()
 
   const startTransition = () => {
+    console.log('Starting page transition')
     setIsTransitioning(true)
   }
 
   const endTransition = () => {
+    console.log('Ending page transition')
     setIsTransitioning(false)
   }
 
+  // Track pathname changes for App Router
   useEffect(() => {
-    const handleRouteChangeStart = () => {
-      startTransition()
+    console.log('Pathname changed to:', pathname, 'isInitialLoad:', isInitialLoad)
+    
+    // Skip transition on initial page load
+    if (isInitialLoad) {
+      setIsInitialLoad(false)
+      return
+    }
+    
+    // Start transition for actual navigation
+    setIsTransitioning(true)
+    console.log('Started transition due to pathname change')
+    
+    // End transition after content loads
+    const timer = setTimeout(() => {
+      setIsTransitioning(false)
+      console.log('Ended transition after timeout')
+    }, 1000) // Increased timeout to make it more visible
+    
+    return () => clearTimeout(timer)
+  }, [pathname, isInitialLoad])
+
+  // Global navigation event listener for programmatic navigation
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      const link = target.closest('a')
+      
+      // Check if it's a navigation link within logbook
+      if (link && link.href.includes('/logbook/')) {
+        const currentPath = window.location.pathname
+        const targetPath = new URL(link.href).pathname
+        
+        // Only trigger transition if it's a different page
+        if (currentPath !== targetPath) {
+          console.log('Navigation detected from', currentPath, 'to', targetPath)
+          startTransition()
+        }
+      }
     }
 
-    const handleRouteChangeComplete = () => {
-      // Add a small delay to ensure the page is fully rendered
-      setTimeout(() => {
-        endTransition()
-      }, 150)
-    }
-
-    const handleRouteChangeError = () => {
-      endTransition()
-    }
-
-    // Listen to router events
-    const originalPush = router.push
-    const originalReplace = router.replace
-
-    router.push = (...args: Parameters<typeof router.push>) => {
-      handleRouteChangeStart()
-      return originalPush.apply(router, args).then((result) => {
-        handleRouteChangeComplete()
-        return result
-      }).catch((error) => {
-        handleRouteChangeError()
-        throw error
-      })
-    }
-
-    router.replace = (...args: Parameters<typeof router.replace>) => {
-      handleRouteChangeStart()
-      return originalReplace.apply(router, args).then((result) => {
-        handleRouteChangeComplete()
-        return result
-      }).catch((error) => {
-        handleRouteChangeError()
-        throw error
-      })
-    }
-
-    // Cleanup
-    return () => {
-      router.push = originalPush
-      router.replace = originalReplace
-    }
-  }, [router])
+    document.addEventListener('click', handleClick)
+    return () => document.removeEventListener('click', handleClick)
+  }, [])
 
   return (
     <PageTransitionContext.Provider value={{ 

@@ -8,8 +8,14 @@ interface PageLoaderProps {
 }
 
 export default function PageLoader({ isVisible }: PageLoaderProps) {
-  if (!isVisible) return null
+  console.log('PageLoader: isVisible =', isVisible)
+  
+  if (!isVisible) {
+    console.log('PageLoader: Not visible, returning null')
+    return null
+  }
 
+  console.log('PageLoader: Rendering loader overlay')
   return (
     <div className={styles.overlay}>
       <div className={styles.loaderContainer}>

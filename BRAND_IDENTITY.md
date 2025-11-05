@@ -24,36 +24,9 @@
 
 ---
 
-## 🎯 Logo & Icon System
-
-### Primary Logo (Favicon & App Icons)
-The Little Logbook icon features:
-- **Central Element**: Open journal/logbook with visible pages
-- **Binding**: Forest green spine representing durability
-- **Heart Accent**: Warm gold heart symbolizing family love
-- **Background**: Circular forest green for app contexts
-
-### Logo Usage
-```
-✅ DO:
-- Use on clean backgrounds with adequate spacing
-- Maintain minimum size of 16px for digital
-- Keep colors consistent with brand palette
-
-❌ DON'T:
-- Stretch or distort proportions
-- Use on busy backgrounds without background treatment
-- Change colors outside of approved palette
-```
-
-### Icon Variants
-- **favicon.svg**: 32x32 scalable vector for web
-- **favicon.ico**: Standard browser format
-- **apple-touch-icon.png**: 180x180 for iOS home screen
-- **icon-192.png**: Android app icon
-- **icon-512.png**: High resolution for stores and displays
-
----
+## 🎯 Icon System
+-- NEVER use emojis
+- Always use icons from lucide icons, using them to help convey meaning
 
 ## 🌈 Color Palette
 

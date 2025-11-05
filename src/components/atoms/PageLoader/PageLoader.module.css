@@ -4,12 +4,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, #F5F3F0 0%, #E8E5E1 100%);
-  z-index: 9999;
+  background: rgba(255, 0, 0, 0.8); /* Bright red for debugging */
+  z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.2s ease-out;
+  pointer-events: auto;
 }
 
 .loaderContainer {
