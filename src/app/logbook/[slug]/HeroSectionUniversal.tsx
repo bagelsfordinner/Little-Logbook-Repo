@@ -58,8 +58,14 @@ export function HeroSectionUniversal({ logbook }: HeroSectionUniversalProps) {
       {/* Hero Text */}
       <div className={styles.heroTextContainer}>
         <div className={styles.heroContent}>
-          {/* Baby Name (not editable) */}
-          <h1 className={styles.babyName}>{babyName}</h1>
+          {/* Baby Name (editable) */}
+          <EditableText
+            path="hero.babyName"
+            fallback={babyName}
+            className={styles.babyName}
+            placeholder="Enter baby's name..."
+            element="h1"
+          />
           
           {/* Editable Title */}
           <EditableText

@@ -122,7 +122,7 @@ function NavigationCards({
               icon={item.icon}
               title={item.title}
               description={item.description}
-              variant="default"
+              variant={item.id === 'admin' ? 'accent' : 'default'}
               onClick={() => window.location.href = item.href}
             />
           </motion.div>
@@ -180,7 +180,7 @@ function StatsSection({ stats }: { stats: LogbookStats }) {
         animate="visible"
       >
         <motion.div 
-          className={styles.statCard}
+          className={`${styles.statCard} ${styles.statCardPhotos}`}
           variants={cardVariants}
           whileHover="hover"
         >
@@ -195,7 +195,7 @@ function StatsSection({ stats }: { stats: LogbookStats }) {
           />
         </motion.div>
         <motion.div 
-          className={styles.statCard}
+          className={`${styles.statCard} ${styles.statCardMembers}`}
           variants={cardVariants}
           whileHover="hover"
         >

@@ -53,6 +53,18 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  border: 2px dashed var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heroImageContainer:empty::before {
+  content: "📸";
+  font-size: 4rem;
+  opacity: 0.6;
+  color: var(--accent-primary);
 }
 
 .heroImage {
@@ -137,11 +149,12 @@
 
 .timeDisplay {
   display: inline-block;
-  background: var(--accent-primary);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   color: white;
   padding: var(--spacing-sm) var(--spacing-lg);
   border-radius: var(--radius-lg);
   font-size: 1.125rem;
+  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb, 0, 0, 0), 0.3);
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -150,6 +163,20 @@
 .navigationSection {
   margin-top: var(--spacing-xl);
   padding: var(--spacing-xl) 0;
+  position: relative;
+}
+
+.navigationSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
+  border-radius: var(--radius-full);
+  opacity: 0.7;
 }
 
 .navigationGrid {
@@ -328,6 +355,22 @@
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.statCardPhotos {
+  border-left: 4px solid var(--accent-primary);
+}
+
+.statCardPhotos svg {
+  color: var(--accent-primary);
+}
+
+.statCardMembers {
+  border-left: 4px solid var(--accent-secondary);
+}
+
+.statCardMembers svg {
+  color: var(--accent-secondary);
 }
 
 /* Loading state */
