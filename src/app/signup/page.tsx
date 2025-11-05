@@ -30,6 +30,8 @@ export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null)
   const [generatedSlug, setGeneratedSlug] = useState<string>('')
   const [slugStatus, setSlugStatus] = useState<'checking' | 'available' | 'generating' | 'ready'>('ready')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const {
     register,
@@ -215,14 +217,24 @@ export default function SignUpPage() {
             <label htmlFor="password" className={styles.label}>
               Password
             </label>
-            <input
-              {...register('password')}
-              type="password"
-              id="password"
-              className={styles.input}
-              placeholder="At least 8 characters"
-              disabled={isLoading}
-            />
+            <div className={styles.passwordInputContainer}>
+              <input
+                {...register('password')}
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                className={styles.input}
+                placeholder="At least 8 characters"
+                disabled={isLoading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className={styles.passwordToggle}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                <Icon name={showPassword ? 'eye-off' : 'eye'} size="sm" />
+              </button>
+            </div>
             {errors.password && (
               <span className={styles.fieldError}>{errors.password.message}</span>
             )}
@@ -232,14 +244,24 @@ export default function SignUpPage() {
             <label htmlFor="confirmPassword" className={styles.label}>
               Confirm Password
             </label>
-            <input
-              {...register('confirmPassword')}
-              type="password"
-              id="confirmPassword"
-              className={styles.input}
-              placeholder="Re-enter your password"
-              disabled={isLoading}
-            />
+            <div className={styles.passwordInputContainer}>
+              <input
+                {...register('confirmPassword')}
+                type={showConfirmPassword ? 'text' : 'password'}
+                id="confirmPassword"
+                className={styles.input}
+                placeholder="Re-enter your password"
+                disabled={isLoading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className={styles.passwordToggle}
+                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+              >
+                <Icon name={showConfirmPassword ? 'eye-off' : 'eye'} size="sm" />
+              </button>
+            </div>
             {errors.confirmPassword && (
               <span className={styles.fieldError}>{errors.confirmPassword.message}</span>
             )}

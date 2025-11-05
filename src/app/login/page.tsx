@@ -21,6 +21,7 @@ export default function LoginPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
 
   const {
     register,
@@ -94,14 +95,24 @@ export default function LoginPage() {
             <label htmlFor="password" className={styles.label}>
               Password
             </label>
-            <input
-              {...register('password')}
-              type="password"
-              id="password"
-              className={styles.input}
-              placeholder="Enter your password"
-              autoComplete="current-password"
-            />
+            <div className={styles.passwordInputContainer}>
+              <input
+                {...register('password')}
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                className={styles.input}
+                placeholder="Enter your password"
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className={styles.passwordToggle}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                <Icon name={showPassword ? 'eye-off' : 'eye'} size="sm" />
+              </button>
+            </div>
             {errors.password && (
               <span className={styles.fieldError}>{errors.password.message}</span>
             )}
