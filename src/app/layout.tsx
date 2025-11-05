@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { QueryProvider } from "@/components/providers/QueryProvider";
+import { PageTransitionProvider } from "@/components/contexts/PageTransitionContext";
 import "../styles/globals.css";
 import "../styles/themes.css";
 
@@ -125,7 +126,9 @@ export default async function RootLayout({
       </head>
       <body>
         <QueryProvider>
-          {children}
+          <PageTransitionProvider>
+            {children}
+          </PageTransitionProvider>
         </QueryProvider>
       </body>
     </html>

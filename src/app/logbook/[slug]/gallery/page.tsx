@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { getLogbookHome, getUserRole } from '@/app/actions/logbook'
 import GallerySkeleton from '@/components/molecules/GallerySkeleton/GallerySkeleton'
+import { PageTransition } from '@/components/wrappers/PageTransition'
 import { GalleryContentUniversal } from './GalleryContentUniversal'
 // styles imported but not used
 
@@ -17,10 +18,12 @@ async function GalleryContentWrapper({ slug }: { slug: string }) {
   }
 
   return (
-    <GalleryContentUniversal 
-      logbook={logbook} 
-      userRole={userRole || 'friend'} 
-    />
+    <PageTransition>
+      <GalleryContentUniversal 
+        logbook={logbook} 
+        userRole={userRole || 'friend'} 
+      />
+    </PageTransition>
   )
 }
 

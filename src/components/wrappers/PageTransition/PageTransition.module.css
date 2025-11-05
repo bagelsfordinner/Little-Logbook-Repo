@@ -1,0 +1,11 @@
+.contentWrapper {
+  transition: opacity 0.2s ease-out;
+}
+
+.fadeIn {
+  opacity: 1;
+}
+
+.fadeOut {
+  opacity: 0;
+}

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { getLogbookHome, getUserRole } from '@/app/actions/logbook'
 import { getLogbookContent } from '@/app/actions/universal-content'
 import { Loader } from '@/components/atoms/Loader'
+import { PageTransition } from '@/components/wrappers/PageTransition'
 import { FAQContentUniversal } from './FAQContentUniversal'
 import styles from './page.module.css'
 
@@ -86,11 +87,13 @@ async function FAQContentWrapper({ slug }: { slug: string }) {
   const initialContent = contentResult.success ? contentResult.data || defaultContent : defaultContent
 
   return (
-    <FAQContentUniversal 
-      logbook={logbook} 
-      userRole={userRole || 'friend'} 
-      initialContent={initialContent}
-    />
+    <PageTransition>
+      <FAQContentUniversal 
+        logbook={logbook} 
+        userRole={userRole || 'friend'} 
+        initialContent={initialContent}
+      />
+    </PageTransition>
   )
 }
 

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { getLogbookHome, getUserRole, getLogbookStats } from '@/app/actions/logbook'
 import { getLogbookContent } from '@/app/actions/universal-content'
 import LogbookSkeleton from '@/components/molecules/LogbookSkeleton/LogbookSkeleton'
+import { PageTransition } from '@/components/wrappers/PageTransition'
 import { LogbookContentUniversal } from './LogbookContentUniversal'
 // styles imported but not used
 
@@ -23,12 +24,14 @@ async function LogbookContentWrapper({ slug }: { slug: string }) {
   const initialContent = contentResult.success ? contentResult.data || {} : {}
 
   return (
-    <LogbookContentUniversal 
-      logbook={logbook} 
-      userRole={userRole || 'friend'} 
-      initialContent={initialContent}
-      stats={stats}
-    />
+    <PageTransition>
+      <LogbookContentUniversal 
+        logbook={logbook} 
+        userRole={userRole || 'friend'} 
+        initialContent={initialContent}
+        stats={stats}
+      />
+    </PageTransition>
   )
 }
 

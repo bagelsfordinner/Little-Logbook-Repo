@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { getLogbookHome, getUserRole } from '@/app/actions/logbook'
 import { getLogbookContent } from '@/app/actions/universal-content'
 import { Loader } from '@/components/atoms/Loader'
+import { PageTransition } from '@/components/wrappers/PageTransition'
 import { HelpContentUniversal } from './HelpContentUniversal'
 import styles from './page.module.css'
 
@@ -165,11 +166,13 @@ async function HelpContentWrapper({ slug }: { slug: string }) {
   const initialContent = contentResult.success ? contentResult.data || defaultContent : defaultContent
 
   return (
-    <HelpContentUniversal 
-      logbook={logbook} 
-      userRole={userRole || 'friend'} 
-      initialContent={initialContent}
-    />
+    <PageTransition>
+      <HelpContentUniversal 
+        logbook={logbook} 
+        userRole={userRole || 'friend'} 
+        initialContent={initialContent}
+      />
+    </PageTransition>
   )
 }
 
