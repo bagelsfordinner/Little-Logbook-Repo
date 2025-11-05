@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 
 interface PageTransitionContextType {
@@ -26,22 +26,28 @@ interface PageTransitionProviderProps {
 export function PageTransitionProvider({ children }: PageTransitionProviderProps) {
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
+  const transitionStartTime = useRef<number>(0)
   const pathname = usePathname()
 
   const startTransition = () => {
-    console.log('Starting page transition')
+    transitionStartTime.current = Date.now()
     setIsTransitioning(true)
   }
 
   const endTransition = () => {
-    console.log('Ending page transition')
-    setIsTransitioning(false)
+    const endTime = Date.now()
+    const elapsed = endTime - transitionStartTime.current
+    const minDuration = 800 // Force 800ms minimum to prevent flickering
+    
+    if (elapsed < minDuration) {
+      setTimeout(() => setIsTransitioning(false), minDuration - elapsed)
+    } else {
+      setIsTransitioning(false)
+    }
   }
 
   // Track pathname changes for App Router
   useEffect(() => {
-    console.log('Pathname changed to:', pathname, 'isInitialLoad:', isInitialLoad)
-    
     // Skip transition on initial page load
     if (isInitialLoad) {
       setIsInitialLoad(false)
@@ -49,14 +55,10 @@ export function PageTransitionProvider({ children }: PageTransitionProviderProps
     }
     
     // Start transition for actual navigation
-    setIsTransitioning(true)
-    console.log('Started transition due to pathname change')
+    startTransition()
     
-    // End transition after content loads
-    const timer = setTimeout(() => {
-      setIsTransitioning(false)
-      console.log('Ended transition after timeout')
-    }, 1000) // Increased timeout to make it more visible
+    // End transition after content loads (with minimum duration enforcement)
+    const timer = setTimeout(endTransition, 300) // Short timeout, endTransition handles minimum duration
     
     return () => clearTimeout(timer)
   }, [pathname, isInitialLoad])
@@ -74,7 +76,6 @@ export function PageTransitionProvider({ children }: PageTransitionProviderProps
         
         // Only trigger transition if it's a different page
         if (currentPath !== targetPath) {
-          console.log('Navigation detected from', currentPath, 'to', targetPath)
           startTransition()
         }
       }
