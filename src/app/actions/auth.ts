@@ -271,6 +271,8 @@ export async function signUpWithInvite(
   displayName: string,
   inviteCode: string
 ): Promise<AuthResult> {
+  // VERY SIMPLE TEST - this should show in server logs
+  console.log('🔥🔥🔥 FUNCTION ENTRY TEST - signUpWithInvite called with:', email)
   console.log('\n======== SIGNUP WITH INVITE START ========')
   console.log('🚀 [SIGNUP_INVITE] Starting signup process with:', {
     email,
