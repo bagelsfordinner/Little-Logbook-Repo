@@ -281,6 +281,7 @@ export async function signUpWithInvite(
   
   try {
     // Validate inputs
+    console.log('📋 [SIGNUP_INVITE] Validating input schema...')
     const validation = signUpWithInviteSchema.safeParse({
       email,
       password,
@@ -289,16 +290,20 @@ export async function signUpWithInvite(
     })
 
     if (!validation.success) {
+      console.log('❌ [SIGNUP_INVITE] Schema validation failed:', validation.error.issues)
       return {
         success: false,
         error: validation.error.issues[0]?.message || 'Invalid input',
       }
     }
+    console.log('✅ [SIGNUP_INVITE] Schema validation passed')
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const supabase = (await createClient()) as any
+    console.log('✅ [SIGNUP_INVITE] Supabase client created')
 
     // Validate invite code
+    console.log('🔍 [SIGNUP_INVITE] Re-validating invite code in signup process:', inviteCode)
     const { data: inviteData, error: inviteError } = await supabase
       .from('invite_codes')
       .select(`
@@ -316,12 +321,16 @@ export async function signUpWithInvite(
       .eq('code', inviteCode)
       .single()
 
+    console.log('📊 [SIGNUP_INVITE] Invite validation result:', { inviteData, inviteError })
+    
     if (inviteError || !inviteData) {
+      console.log('❌ [SIGNUP_INVITE] Invite code validation failed during signup')
       return {
         success: false,
         error: 'Invalid invite code',
       }
     }
+    console.log('✅ [SIGNUP_INVITE] Invite code validated successfully')
 
     // Check if invite code is expired
     if (inviteData.expires_at && new Date(inviteData.expires_at) < new Date()) {
@@ -340,12 +349,21 @@ export async function signUpWithInvite(
     }
 
     // Sign up the user
+    console.log('👤 [SIGNUP_INVITE] Creating auth user account...')
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
     })
 
+    console.log('📊 [SIGNUP_INVITE] Auth signup result:', {
+      hasAuthData: !!authData,
+      hasUser: !!authData?.user,
+      userId: authData?.user?.id,
+      authError: authError
+    })
+
     if (authError || !authData.user) {
+      console.log('❌ [SIGNUP_INVITE] Auth user creation failed:', authError)
       return {
         success: false,
         error: authError?.message || 'Failed to create account',
@@ -353,8 +371,12 @@ export async function signUpWithInvite(
     }
 
     const userId = authData.user.id
+    console.log('✅ [SIGNUP_INVITE] Auth user created successfully:', userId)
 
     // Create profile record using admin client (bypasses RLS)
+    console.log('📝 [SIGNUP_INVITE] Creating user profile with admin client...')
+    console.log('📋 [SIGNUP_INVITE] Profile data:', { id: userId, display_name: displayName })
+    
     const adminClient = createAdminClient()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error: profileError } = await (adminClient as any)
@@ -365,14 +387,25 @@ export async function signUpWithInvite(
         avatar_url: null,
       })
 
+    console.log('📊 [SIGNUP_INVITE] Profile creation result:', { profileError })
+
     if (profileError) {
+      console.log('❌ [SIGNUP_INVITE] Profile creation failed:', profileError)
       return {
         success: false,
         error: `Failed to create user profile: ${profileError.message}`,
       }
     }
+    console.log('✅ [SIGNUP_INVITE] Profile created successfully')
 
     // Create logbook_members record with role from invite
+    console.log('👥 [SIGNUP_INVITE] Adding user to logbook as member...')
+    console.log('📋 [SIGNUP_INVITE] Member data:', {
+      logbook_id: inviteData.logbook_id,
+      user_id: userId,
+      role: inviteData.role
+    })
+    
     const { error: memberError } = await supabase
       .from('logbook_members')
       .insert({
@@ -381,30 +414,76 @@ export async function signUpWithInvite(
         role: inviteData.role,
       })
 
+    console.log('📊 [SIGNUP_INVITE] Member insertion result:', { 
+      memberError,
+      errorCode: memberError?.code,
+      errorMessage: memberError?.message,
+      errorDetails: memberError?.details
+    })
+
     if (memberError) {
+      console.log('❌ [SIGNUP_INVITE] Failed to add user to logbook:', {
+        error: memberError,
+        logbook_id: inviteData.logbook_id,
+        user_id: userId,
+        role: inviteData.role
+      })
       return {
         success: false,
         error: 'Failed to add user to logbook',
       }
     }
+    console.log('✅ [SIGNUP_INVITE] User added to logbook successfully')
 
     // Increment invite code uses
+    console.log('🔢 [SIGNUP_INVITE] Incrementing invite code usage count...')
+    const newUsesCount = inviteData.uses_count + 1
+    console.log('📋 [SIGNUP_INVITE] Usage update:', {
+      currentCount: inviteData.uses_count,
+      newCount: newUsesCount,
+      inviteId: inviteData.id
+    })
+    
     const { error: updateError } = await supabase
       .from('invite_codes')
       .update({
-        uses_count: inviteData.uses_count + 1,
+        uses_count: newUsesCount,
       })
       .eq('id', inviteData.id)
 
+    console.log('📊 [SIGNUP_INVITE] Usage count update result:', { updateError })
+
     if (updateError) {
-      console.error('Failed to update invite code uses:', updateError)
+      console.error('❌ [SIGNUP_INVITE] Failed to update invite code uses:', updateError)
+    } else {
+      console.log('✅ [SIGNUP_INVITE] Invite code usage count updated successfully')
     }
 
+    console.log('🎉 [SIGNUP_INVITE] Signup process completed successfully!')
+    console.log('📋 [SIGNUP_INVITE] Final result:', {
+      logbookSlug: inviteData.logbooks?.slug,
+      userId: userId,
+      role: inviteData.role
+    })
+    
     revalidatePath('/')
     return {
       success: true,
       logbookSlug: inviteData.logbooks?.slug,
     }
+  } catch (error) {
+    console.error('💥 [SIGNUP_INVITE] Unexpected error during signup:', {
+      error,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      errorStack: error instanceof Error ? error.stack : null
+    })
+    return {
+      success: false,
+      error: 'An unexpected error occurred',
+    }
+  } finally {
+    console.log('======== SIGNUP WITH INVITE END ========\n')
+  }
   } catch (error) {
     console.error('Sign up with invite error:', error)
     return {
