@@ -549,7 +549,10 @@ export async function validateInviteCode(code: string): Promise<InviteValidation
       max_uses: inviteData.max_uses,
       uses_count: inviteData.uses_count,
       expires_at: inviteData.expires_at,
-      logbook_name: inviteData.logbooks?.name
+      logbooks: inviteData.logbooks,
+      logbook_name: inviteData.logbooks?.name,
+      hasLogbooks: !!inviteData.logbooks,
+      logbooksType: typeof inviteData.logbooks
     })
 
     // Check if invite code is expired

@@ -62,6 +62,14 @@ export default function JoinWithCodePage() {
       validateInviteCode(code)
         .then((result) => {
           console.log('📊 [JOIN PAGE] Validation result received:', result)
+          console.log('🔍 [JOIN PAGE] Detailed validation check:', {
+            valid: result.valid,
+            hasLogbookName: !!result.logbookName,
+            logbookName: result.logbookName,
+            hasRole: !!result.role,
+            role: result.role
+          })
+          
           if (result.valid && result.logbookName && result.role) {
             console.log('🎉 [JOIN PAGE] Validation successful, setting invite data')
             setInviteData({
@@ -69,7 +77,13 @@ export default function JoinWithCodePage() {
               role: result.role,
             })
           } else {
-            console.log('❌ [JOIN PAGE] Validation failed:', result.error || 'Invalid invite code')
+            console.log('❌ [JOIN PAGE] Validation failed - Missing data:', {
+              valid: result.valid,
+              logbookName: result.logbookName,
+              role: result.role,
+              missingLogbookName: !result.logbookName,
+              missingRole: !result.role
+            })
             setError(result.error || 'Invalid invite code')
           }
         })
