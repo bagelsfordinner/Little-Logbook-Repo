@@ -22,9 +22,17 @@ const signUpWithInviteSchema = z.object({
 type SignUpWithInviteFormData = z.infer<typeof signUpWithInviteSchema>
 
 export default function JoinWithCodePage() {
+  console.log('🔄 [JOIN PAGE] Component rendering/re-rendering')
   const router = useRouter()
   const params = useParams()
   const code = params.code as string
+  
+  console.log('🌍 [JOIN PAGE] Initial state:', { 
+    params, 
+    code, 
+    codeType: typeof code,
+    codeLength: code?.length 
+  })
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -46,48 +54,67 @@ export default function JoinWithCodePage() {
 
   // Validate invite code on page load
   useEffect(() => {
+    console.log('🚀 [JOIN PAGE] Starting invite code validation process')
+    console.log('📋 [JOIN PAGE] Code from URL params:', { code, codeType: typeof code, codeLength: code?.length })
+    
     if (code) {
+      console.log('✅ [JOIN PAGE] Code exists, calling validateInviteCode...')
       validateInviteCode(code)
         .then((result) => {
+          console.log('📊 [JOIN PAGE] Validation result received:', result)
           if (result.valid && result.logbookName && result.role) {
+            console.log('🎉 [JOIN PAGE] Validation successful, setting invite data')
             setInviteData({
               logbookName: result.logbookName,
               role: result.role,
             })
           } else {
+            console.log('❌ [JOIN PAGE] Validation failed:', result.error || 'Invalid invite code')
             setError(result.error || 'Invalid invite code')
           }
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error('💥 [JOIN PAGE] Validation threw error:', error)
           setError('Failed to validate invite code')
         })
         .finally(() => {
+          console.log('🏁 [JOIN PAGE] Validation process complete, setting validatingCode to false')
           setValidatingCode(false)
         })
     } else {
+      console.log('❌ [JOIN PAGE] No invite code provided in URL')
       setError('No invite code provided')
       setValidatingCode(false)
     }
   }, [code])
 
   const onSubmit = async (data: SignUpWithInviteFormData) => {
+    console.log('🎯 [JOIN PAGE] Form submitted with data:', { ...data, password: '[REDACTED]' })
+    console.log('🔑 [JOIN PAGE] Using invite code:', code)
+    
     setIsLoading(true)
     setError(null)
 
     try {
+      console.log('📤 [JOIN PAGE] Calling signUpWithInvite...')
       const result = await signUpWithInvite(
         data.email,
         data.password,
         data.displayName,
         code
       )
+      
+      console.log('📋 [JOIN PAGE] signUpWithInvite result:', result)
 
       if (result.success) {
+        console.log('🎉 [JOIN PAGE] Signup successful, redirecting to dashboard')
         router.push('/dashboard')
       } else {
+        console.log('❌ [JOIN PAGE] Signup failed:', result.error)
         setError(result.error || 'Failed to create account')
       }
-    } catch {
+    } catch (error) {
+      console.error('💥 [JOIN PAGE] Signup threw error:', error)
       setError('An unexpected error occurred')
     } finally {
       setIsLoading(false)

@@ -271,6 +271,14 @@ export async function signUpWithInvite(
   displayName: string,
   inviteCode: string
 ): Promise<AuthResult> {
+  console.log('\n======== SIGNUP WITH INVITE START ========')
+  console.log('🚀 [SIGNUP_INVITE] Starting signup process with:', {
+    email,
+    displayName,
+    inviteCode,
+    passwordLength: password?.length
+  })
+  
   try {
     // Validate inputs
     const validation = signUpWithInviteSchema.safeParse({
@@ -472,21 +480,30 @@ export async function signOut(): Promise<AuthResult> {
 }
 
 export async function validateInviteCode(code: string): Promise<InviteValidationResult> {
+  console.log('\n======== INVITE CODE VALIDATION START ========')
   try {
-    console.log('🔍 Validating invite code:', { code, codeLength: code?.length })
+    console.log('🔍 [VALIDATE] Input received:', { 
+      code, 
+      codeType: typeof code, 
+      codeLength: code?.length,
+      codeCharCodes: code ? Array.from(code).map(c => c.charCodeAt(0)) : null
+    })
     
     if (!code) {
-      console.log('❌ No invite code provided')
+      console.log('❌ [VALIDATE] No invite code provided')
       return {
         valid: false,
         error: 'Invite code is required',
       }
     }
 
+    console.log('📞 [VALIDATE] Creating Supabase client...')
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const supabase = (await createClient()) as any
+    console.log('✅ [VALIDATE] Supabase client created successfully')
     
-    console.log('📝 Executing query for invite code:', code)
+    console.log('📝 [VALIDATE] Executing database query with code:', code)
+    console.log('📝 [VALIDATE] SQL Query: SELECT id, role, max_uses, uses_count, expires_at, logbooks(name) FROM invite_codes WHERE code = \'', code, '\'')
 
     const { data: inviteData, error: inviteError } = await supabase
       .from('invite_codes')
@@ -503,42 +520,96 @@ export async function validateInviteCode(code: string): Promise<InviteValidation
       .eq('code', code)
       .single()
       
-    console.log('📊 Query result:', { inviteData, inviteError })
+    console.log('📊 [VALIDATE] Raw database response:', { 
+      inviteData, 
+      inviteError,
+      errorCode: inviteError?.code,
+      errorMessage: inviteError?.message,
+      errorDetails: inviteError?.details
+    })
 
     if (inviteError || !inviteData) {
+      console.log('❌ [VALIDATE] Query failed or no data returned')
+      console.log('❌ [VALIDATE] Error details:', {
+        hasError: !!inviteError,
+        hasData: !!inviteData,
+        errorCode: inviteError?.code,
+        errorMessage: inviteError?.message
+      })
       return {
         valid: false,
         error: 'Invalid invite code',
       }
     }
+    
+    console.log('✅ [VALIDATE] Data found, checking validity conditions')
+    console.log('📝 [VALIDATE] Invite data:', {
+      id: inviteData.id,
+      role: inviteData.role,
+      max_uses: inviteData.max_uses,
+      uses_count: inviteData.uses_count,
+      expires_at: inviteData.expires_at,
+      logbook_name: inviteData.logbooks?.name
+    })
 
     // Check if invite code is expired
-    if (inviteData.expires_at && new Date(inviteData.expires_at) < new Date()) {
-      return {
-        valid: false,
-        error: 'Invite code has expired',
+    if (inviteData.expires_at) {
+      const expiryDate = new Date(inviteData.expires_at)
+      const currentDate = new Date()
+      console.log('🕓 [VALIDATE] Checking expiration:', {
+        expires_at: inviteData.expires_at,
+        expiryDate: expiryDate.toISOString(),
+        currentDate: currentDate.toISOString(),
+        isExpired: expiryDate < currentDate
+      })
+      
+      if (expiryDate < currentDate) {
+        console.log('❌ [VALIDATE] Invite code has expired')
+        return {
+          valid: false,
+          error: 'Invite code has expired',
+        }
       }
+    } else {
+      console.log('✅ [VALIDATE] No expiration date set')
     }
 
     // Check if invite code has remaining uses
+    console.log('🔢 [VALIDATE] Checking usage limits:', {
+      max_uses: inviteData.max_uses,
+      uses_count: inviteData.uses_count,
+      hasMaxUses: !!inviteData.max_uses,
+      isAtLimit: inviteData.max_uses && inviteData.uses_count >= inviteData.max_uses
+    })
+    
     if (inviteData.max_uses && inviteData.uses_count >= inviteData.max_uses) {
+      console.log('❌ [VALIDATE] Invite code has reached maximum uses')
       return {
         valid: false,
         error: 'Invite code has reached maximum uses',
       }
     }
-
-    return {
+    
+    console.log('🎉 [VALIDATE] All checks passed, invite code is valid!')
+    const result = {
       valid: true,
       logbookName: inviteData.logbooks?.name,
       role: inviteData.role,
     }
+    console.log('📎 [VALIDATE] Returning result:', result)
+    return result
   } catch (error) {
-    console.error('Validate invite code error:', error)
+    console.error('💥 [VALIDATE] Unexpected error occurred:', {
+      error,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      errorStack: error instanceof Error ? error.stack : null
+    })
     return {
       valid: false,
       error: 'An unexpected error occurred',
     }
+  } finally {
+    console.log('======== INVITE CODE VALIDATION END ========\n')
   }
 }
 

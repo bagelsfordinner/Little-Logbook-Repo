@@ -11,18 +11,25 @@ export default function JoinPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log('🚀 [JOIN FORM] Form submission started')
     e.preventDefault()
     
+    console.log('📝 [JOIN FORM] Raw invite code input:', { inviteCode, length: inviteCode.length })
+    
     if (!inviteCode.trim()) {
+      console.log('❌ [JOIN FORM] Empty invite code, returning early')
       return
     }
 
+    console.log('⏳ [JOIN FORM] Setting loading state')
     setIsLoading(true)
     
     // Clean up the invite code (remove any whitespace, convert to uppercase)
     const cleanCode = inviteCode.trim().toUpperCase()
+    console.log('🧹 [JOIN FORM] Cleaned invite code:', { original: inviteCode, cleaned: cleanCode })
     
     // Redirect to the invite code validation page
+    console.log('🔗 [JOIN FORM] Redirecting to:', `/join/${cleanCode}`)
     router.push(`/join/${cleanCode}`)
   }
 
