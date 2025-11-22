@@ -23,7 +23,6 @@ const getNavLinks = (logbookSlug: string) => [
   { label: 'Home', href: `/logbook/${logbookSlug}`, requiresAuth: false },
   { label: 'Gallery', href: `/logbook/${logbookSlug}/gallery`, requiresAuth: false },
   { label: 'Help', href: `/logbook/${logbookSlug}/help`, requiresAuth: false },
-  { label: 'Vault', href: `/logbook/${logbookSlug}/vault`, requiresAuth: true },
   { label: 'FAQ', href: `/logbook/${logbookSlug}/faq`, requiresAuth: false },
   { label: 'Admin', href: `/logbook/${logbookSlug}/admin`, requiresAuth: true, parentOnly: true },
 ]
@@ -41,6 +40,15 @@ export default function Header({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  
+  // Debug user profile
+  console.log('🔍 Header Debug:', {
+    userName,
+    userAvatar,
+    userRole,
+    logbookName,
+    logbookSlug
+  })
   
   const userMenuRef = useRef<HTMLDivElement>(null)
   const mobileMenuRef = useRef<HTMLDivElement>(null)
@@ -133,7 +141,7 @@ export default function Header({
                 fallback={userName?.charAt(0) || 'U'}
                 size="md"
               />
-              <span className={styles.userName}>{userName || 'Current User'}</span>
+              <span className={styles.userName}>{userName || 'Unknown User'}</span>
               <svg
                 className={`${styles.chevron} ${isUserMenuOpen ? styles.chevronUp : ''}`}
                 width="12"
