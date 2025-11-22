@@ -70,10 +70,10 @@ export default function JoinWithCodePage() {
             role: result.role
           })
           
-          if (result.valid && result.logbookName && result.role) {
+          if (result.valid && result.role) {
             console.log('🎉 [JOIN PAGE] Validation successful, setting invite data')
             setInviteData({
-              logbookName: result.logbookName,
+              logbookName: result.logbookName || 'Family Logbook', // Fallback name
               role: result.role,
             })
           } else {
@@ -81,7 +81,6 @@ export default function JoinWithCodePage() {
               valid: result.valid,
               logbookName: result.logbookName,
               role: result.role,
-              missingLogbookName: !result.logbookName,
               missingRole: !result.role
             })
             setError(result.error || 'Invalid invite code')
