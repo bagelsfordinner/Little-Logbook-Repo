@@ -171,16 +171,6 @@ export default function Home() {
             >
               Create Your Logbook
             </Button>
-            <div className={styles.helpLinks}>
-              <Link href="/demo" className={styles.link}>
-                <Icon name="external-link" size="sm" />
-                View Demo
-              </Link>
-              <Link href="/faq" className={styles.link}>
-                <Icon name="help-circle" size="sm" />
-                Learn More
-              </Link>
-            </div>
           </div>
         </div>
       </div>
