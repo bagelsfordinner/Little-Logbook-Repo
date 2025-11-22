@@ -484,13 +484,6 @@ export async function signUpWithInvite(
   } finally {
     console.log('======== SIGNUP WITH INVITE END ========\n')
   }
-  } catch (error) {
-    console.error('Sign up with invite error:', error)
-    return {
-      success: false,
-      error: 'An unexpected error occurred',
-    }
-  }
 }
 
 export async function signIn(email: string, password: string): Promise<AuthResult> {
