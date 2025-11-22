@@ -2,9 +2,16 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   transition: all var(--transition-base);
+}
+
+[data-theme="dark"] .header {
+  background: rgba(18, 18, 18, 0.95);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .scrolled {
@@ -82,9 +89,6 @@
   flex-shrink: 0;
 }
 
-.themeSelector {
-  display: none;
-}
 
 /* User Menu */
 .userMenu {
@@ -311,16 +315,6 @@
   padding-top: var(--spacing-lg);
 }
 
-.mobileThemeSelector {
-  margin-bottom: var(--spacing-xl);
-}
-
-.themeLabel {
-  display: block;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-sm);
-}
 
 .mobileUserSection {
   background: var(--bg-secondary);
@@ -353,9 +347,6 @@
     display: flex;
   }
   
-  .themeSelector {
-    display: block;
-  }
   
   .userName {
     display: block;
@@ -375,9 +366,6 @@
     display: none;
   }
   
-  .themeSelector {
-    display: none;
-  }
   
   .mobileMenuButton {
     display: block;

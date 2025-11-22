@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react'
 import { Button } from '../../atoms/Button'
 import { Avatar } from '../../atoms/Avatar'
 import { Badge } from '../../atoms/Badge'
-import { LogbookThemeSwitcher } from '../../LogbookThemeSwitcher'
 import styles from './Header.module.css'
 
 type UserRole = 'parent' | 'family' | 'friend'
@@ -12,7 +11,6 @@ type UserRole = 'parent' | 'family' | 'friend'
 interface HeaderProps {
   logbookName: string
   logbookSlug: string
-  logbookId: string
   userName: string
   userAvatar?: string
   userRole: UserRole
@@ -27,14 +25,12 @@ const getNavLinks = (logbookSlug: string) => [
   { label: 'Help', href: `/logbook/${logbookSlug}/help`, requiresAuth: false },
   { label: 'Vault', href: `/logbook/${logbookSlug}/vault`, requiresAuth: true },
   { label: 'FAQ', href: `/logbook/${logbookSlug}/faq`, requiresAuth: false },
-  { label: 'Timeline', href: `/logbook/${logbookSlug}/timeline`, requiresAuth: false },
   { label: 'Admin', href: `/logbook/${logbookSlug}/admin`, requiresAuth: true, parentOnly: true },
 ]
 
 export default function Header({
   logbookName,
   logbookSlug,
-  logbookId,
   userName,
   userAvatar,
   userRole,
@@ -123,14 +119,6 @@ export default function Header({
 
         {/* Right Side Actions */}
         <div className={styles.rightActions}>
-          {/* Theme Switcher - Desktop */}
-          <div className={styles.themeSelector}>
-            <LogbookThemeSwitcher 
-              logbookId={logbookId}
-              userRole={userRole}
-            />
-          </div>
-
           {/* User Menu */}
           <div className={styles.userMenu} ref={userMenuRef}>
             <button
@@ -145,7 +133,7 @@ export default function Header({
                 fallback={userName?.charAt(0) || 'U'}
                 size="md"
               />
-              <span className={styles.userName}>{userName || 'User'}</span>
+              <span className={styles.userName}>{userName || 'Current User'}</span>
               <svg
                 className={`${styles.chevron} ${isUserMenuOpen ? styles.chevronUp : ''}`}
                 width="12"
@@ -225,14 +213,6 @@ export default function Header({
             </nav>
 
             <div className={styles.mobileMenuActions}>
-              <div className={styles.mobileThemeSelector}>
-                <label className={styles.themeLabel}>Theme</label>
-                <LogbookThemeSwitcher 
-                  logbookId={logbookId}
-                  userRole={userRole}
-                />
-              </div>
-
               <div className={styles.mobileUserSection}>
                 <div className={styles.mobileUserInfo}>
                   <Avatar
