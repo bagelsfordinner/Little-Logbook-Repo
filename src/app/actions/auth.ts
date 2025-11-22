@@ -473,7 +473,10 @@ export async function signOut(): Promise<AuthResult> {
 
 export async function validateInviteCode(code: string): Promise<InviteValidationResult> {
   try {
+    console.log('🔍 Validating invite code:', { code, codeLength: code?.length })
+    
     if (!code) {
+      console.log('❌ No invite code provided')
       return {
         valid: false,
         error: 'Invite code is required',
@@ -482,6 +485,8 @@ export async function validateInviteCode(code: string): Promise<InviteValidation
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const supabase = (await createClient()) as any
+    
+    console.log('📝 Executing query for invite code:', code)
 
     const { data: inviteData, error: inviteError } = await supabase
       .from('invite_codes')
@@ -497,6 +502,8 @@ export async function validateInviteCode(code: string): Promise<InviteValidation
       `)
       .eq('code', code)
       .single()
+      
+    console.log('📊 Query result:', { inviteData, inviteError })
 
     if (inviteError || !inviteData) {
       return {

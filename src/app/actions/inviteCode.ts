@@ -123,11 +123,13 @@ export async function createInviteCode(
 
     // Calculate expiration date
     let expiresAt: string | null = null
-    if (expiresInDays) {
+    if (expiresInDays && expiresInDays > 0) {
       const expireDate = new Date()
       expireDate.setDate(expireDate.getDate() + expiresInDays)
       expiresAt = expireDate.toISOString()
     }
+    
+    console.log('🔧 Creating invite code:', { code, logbookId, role, maxUses, expiresAt })
 
     // Create invite code
     const { error: insertError } = await supabase
