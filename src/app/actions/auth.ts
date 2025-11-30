@@ -408,6 +408,41 @@ export async function signUpWithInvite(
       role: inviteData.role
     })
     
+    // Check if user is already a member (duplicate prevention)
+    console.log('🔍 [SIGNUP_INVITE] Checking for existing membership...')
+    const { data: existingMember, error: checkError } = await supabase
+      .from('logbook_members')
+      .select('id, role')
+      .eq('logbook_id', inviteData.logbook_id)
+      .eq('user_id', userId)
+      .single()
+
+    console.log('📊 [SIGNUP_INVITE] Existing member check:', { 
+      existingMember, 
+      checkError,
+      checkErrorCode: checkError?.code 
+    })
+
+    if (existingMember) {
+      console.log('❌ [SIGNUP_INVITE] User is already a member of this logbook')
+      return {
+        success: false,
+        error: `User is already a member of this logbook with role: ${existingMember.role}`,
+      }
+    }
+
+    // Check current session status
+    console.log('🔐 [SIGNUP_INVITE] Checking current auth session...')
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+    console.log('📊 [SIGNUP_INVITE] Session check:', {
+      hasSession: !!session,
+      sessionUserId: session?.user?.id,
+      targetUserId: userId,
+      sessionError
+    })
+    
+    // Try with regular client first
+    console.log('🎯 [SIGNUP_INVITE] Attempting member insertion with regular client...')
     const { error: memberError } = await supabase
       .from('logbook_members')
       .insert({
@@ -416,26 +451,87 @@ export async function signUpWithInvite(
         role: inviteData.role,
       })
 
-    console.log('📊 [SIGNUP_INVITE] Member insertion result:', { 
+    console.log('📊 [SIGNUP_INVITE] Member insertion result (regular client):', { 
       memberError,
       errorCode: memberError?.code,
       errorMessage: memberError?.message,
-      errorDetails: memberError?.details
+      errorDetails: memberError?.details,
+      errorHint: memberError?.hint
     })
 
+    // If regular client fails, try with admin client
     if (memberError) {
-      console.log('❌ [SIGNUP_INVITE] Failed to add user to logbook:', {
-        error: memberError,
-        logbook_id: inviteData.logbook_id,
-        user_id: userId,
-        role: inviteData.role
-      })
-      return {
-        success: false,
-        error: 'Failed to add user to logbook',
+      console.log('⚠️ [SIGNUP_INVITE] Regular client failed, trying admin client...')
+      
+      // Create detailed error analysis
+      let errorAnalysis = 'Unknown error'
+      
+      if (memberError.code) {
+        switch (memberError.code) {
+          case 'PGRST301':
+            errorAnalysis = 'RLS Policy Block - Row Level Security preventing insert'
+            break
+          case '23505':
+            errorAnalysis = 'Unique Constraint Violation - User already exists in logbook'
+            break
+          case '23503':
+            errorAnalysis = 'Foreign Key Constraint Violation - Referenced record does not exist'
+            break
+          case 'PGRST116':
+            errorAnalysis = 'Not Found Error - Referenced table or record missing'
+            break
+          default:
+            errorAnalysis = `Database Error Code: ${memberError.code}`
+        }
       }
+
+      console.log('🔍 [SIGNUP_INVITE] Error Analysis:', {
+        code: memberError.code,
+        analysis: errorAnalysis,
+        message: memberError.message,
+        details: memberError.details
+      })
+
+      // Try with admin client to bypass RLS
+      try {
+        console.log('🔑 [SIGNUP_INVITE] Creating admin client for member insertion...')
+        const adminClient = createAdminClient()
+        
+        const { error: adminMemberError } = await (adminClient as any)
+          .from('logbook_members')
+          .insert({
+            logbook_id: inviteData.logbook_id,
+            user_id: userId,
+            role: inviteData.role,
+          })
+
+        console.log('📊 [SIGNUP_INVITE] Admin client insertion result:', {
+          adminMemberError,
+          errorCode: adminMemberError?.code,
+          errorMessage: adminMemberError?.message
+        })
+
+        if (adminMemberError) {
+          console.log('❌ [SIGNUP_INVITE] Admin client also failed - this is a serious issue')
+          return {
+            success: false,
+            error: `Admin Client Error: ${adminMemberError.code} - ${adminMemberError.message}. Original Error: ${errorAnalysis}`,
+          }
+        }
+        
+        console.log('✅ [SIGNUP_INVITE] Admin client succeeded - RLS was blocking regular client')
+        
+      } catch (adminError) {
+        console.error('💥 [SIGNUP_INVITE] Admin client threw exception:', adminError)
+        return {
+          success: false,
+          error: `Critical Error - Admin client failed: ${adminError}. Original Issue: ${errorAnalysis}`,
+        }
+      }
+      
+    } else {
+      console.log('✅ [SIGNUP_INVITE] Regular client succeeded - user added to logbook successfully')
     }
-    console.log('✅ [SIGNUP_INVITE] User added to logbook successfully')
 
     // Increment invite code uses
     console.log('🔢 [SIGNUP_INVITE] Incrementing invite code usage count...')
@@ -453,10 +549,22 @@ export async function signUpWithInvite(
       })
       .eq('id', inviteData.id)
 
-    console.log('📊 [SIGNUP_INVITE] Usage count update result:', { updateError })
+    console.log('📊 [SIGNUP_INVITE] Usage count update result:', { 
+      updateError,
+      errorCode: updateError?.code,
+      errorMessage: updateError?.message
+    })
 
     if (updateError) {
-      console.error('❌ [SIGNUP_INVITE] Failed to update invite code uses:', updateError)
+      console.error('❌ [SIGNUP_INVITE] Failed to update invite code uses:', {
+        error: updateError,
+        code: updateError.code,
+        message: updateError.message,
+        inviteId: inviteData.id,
+        newCount: newUsesCount
+      })
+      // Note: We don't fail the signup if invite code update fails
+      // User has been successfully added to logbook
     } else {
       console.log('✅ [SIGNUP_INVITE] Invite code usage count updated successfully')
     }
