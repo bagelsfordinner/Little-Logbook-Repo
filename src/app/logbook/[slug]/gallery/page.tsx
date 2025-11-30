@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { getLogbookHome, getUserRole } from '@/app/actions/logbook'
+import { getCurrentUser } from '@/app/actions/dashboard'
 import GallerySkeleton from '@/components/molecules/GallerySkeleton/GallerySkeleton'
 import { PageTransition } from '@/components/wrappers/PageTransition'
 import { GalleryContentUniversal } from './GalleryContentUniversal'
@@ -8,9 +9,10 @@ import { GalleryContentUniversal } from './GalleryContentUniversal'
 
 // Main Gallery content server component
 async function GalleryContentWrapper({ slug }: { slug: string }) {
-  const [logbook, userRole] = await Promise.all([
+  const [logbook, userRole, currentUser] = await Promise.all([
     getLogbookHome(slug),
-    getUserRole(slug)
+    getUserRole(slug),
+    getCurrentUser()
   ])
 
   if (!logbook) {
@@ -21,7 +23,8 @@ async function GalleryContentWrapper({ slug }: { slug: string }) {
     <PageTransition>
       <GalleryContentUniversal 
         logbook={logbook} 
-        userRole={userRole || 'friend'} 
+        userRole={userRole || 'friend'}
+        currentUser={currentUser}
       />
     </PageTransition>
   )

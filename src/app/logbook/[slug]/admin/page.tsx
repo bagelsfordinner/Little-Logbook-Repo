@@ -1,15 +1,17 @@
 import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { getLogbookHome, getUserRole } from '@/app/actions/logbook'
+import { getCurrentUser } from '@/app/actions/dashboard'
 import LogbookSkeleton from '@/components/molecules/LogbookSkeleton/LogbookSkeleton'
 import { PageTransition } from '@/components/wrappers/PageTransition'
 import AdminContentUniversal from './AdminContentUniversal'
 
 // Admin content server component
 async function AdminContentWrapper({ slug }: { slug: string }) {
-  const [logbook, userRole] = await Promise.all([
+  const [logbook, userRole, currentUser] = await Promise.all([
     getLogbookHome(slug),
-    getUserRole(slug)
+    getUserRole(slug),
+    getCurrentUser()
   ])
 
   if (!logbook) {
@@ -20,7 +22,8 @@ async function AdminContentWrapper({ slug }: { slug: string }) {
     <PageTransition>
       <AdminContentUniversal 
         logbook={logbook} 
-        userRole={userRole || 'friend'} 
+        userRole={userRole || 'friend'}
+        currentUser={currentUser}
       />
     </PageTransition>
   )

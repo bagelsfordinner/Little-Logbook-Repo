@@ -181,10 +181,15 @@ function GalleryContent({ logbook }: { logbook: GalleryContentUniversalProps['lo
 interface GalleryContentUniversalProps {
   logbook: LogbookHome
   userRole: string
+  currentUser?: {
+    id: string
+    email?: string
+    display_name: string
+  } | null
 }
 
 // Main component with ContentProvider
-export function GalleryContentUniversal({ logbook, userRole }: GalleryContentUniversalProps) {
+export function GalleryContentUniversal({ logbook, userRole, currentUser }: GalleryContentUniversalProps) {
   const handleSignOut = () => {
     window.location.href = '/login'
   }
@@ -214,7 +219,7 @@ export function GalleryContentUniversal({ logbook, userRole }: GalleryContentUni
           logbookName={logbook.name}
           logbookSlug={logbook.slug}
           logbookId={logbook.id}
-          userName="Current User"
+          userName={currentUser?.display_name || 'User'}
           userRole={(userRole as 'parent' | 'family' | 'friend') || 'friend'}
           currentPath="Gallery"
           onSignOut={handleSignOut}

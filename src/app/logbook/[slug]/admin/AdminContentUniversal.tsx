@@ -17,11 +17,17 @@ interface AdminContentUniversalProps {
     name: string
   }
   userRole: 'parent' | 'family' | 'friend'
+  currentUser?: {
+    id: string
+    email?: string
+    display_name: string
+  } | null
 }
 
 export default function AdminContentUniversal({
   logbook,
-  userRole
+  userRole,
+  currentUser
 }: AdminContentUniversalProps) {
   const [inviteCodes, setInviteCodes] = useState<InviteCode[]>([])
   const [isCreatingInvite, setIsCreatingInvite] = useState(false)
@@ -106,7 +112,7 @@ export default function AdminContentUniversal({
             logbookName={logbook.name}
             logbookSlug={logbook.slug}
             logbookId={logbook.id}
-            userName="Current User"
+            userName={currentUser?.display_name || 'User'}
             userRole={userRole}
             currentPath="admin"
           />

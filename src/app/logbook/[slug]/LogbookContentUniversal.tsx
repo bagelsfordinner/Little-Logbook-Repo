@@ -25,6 +25,11 @@ interface LogbookContentUniversalProps {
   userRole: string
   initialContent?: Record<string, unknown>
   stats: LogbookStats | null
+  currentUser?: {
+    id: string
+    email?: string
+    display_name: string
+  } | null
 }
 
 // Navigation Cards Section
@@ -218,7 +223,8 @@ export function LogbookContentUniversal({
   logbook, 
   userRole, 
   initialContent = {},
-  stats 
+  stats,
+  currentUser 
 }: LogbookContentUniversalProps) {
 
   // Define sections for the edit panel
@@ -258,7 +264,7 @@ export function LogbookContentUniversal({
             logbookName={logbook.name}
             logbookSlug={logbook.slug}
             logbookId={logbook.id}
-            userName="Current User" // This should come from auth
+            userName={currentUser?.display_name || 'User'}
             userRole={(userRole as 'parent' | 'family' | 'friend') || 'friend'}
             currentPath="" // This should be determined from router
           />

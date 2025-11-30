@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { getLogbookHome, getUserRole, getLogbookStats } from '@/app/actions/logbook'
 import { getLogbookContent } from '@/app/actions/universal-content'
+import { getCurrentUser } from '@/app/actions/dashboard'
 import LogbookSkeleton from '@/components/molecules/LogbookSkeleton/LogbookSkeleton'
 import { PageTransition } from '@/components/wrappers/PageTransition'
 import { LogbookContentUniversal } from './LogbookContentUniversal'
@@ -9,11 +10,12 @@ import { LogbookContentUniversal } from './LogbookContentUniversal'
 
 // Main logbook content server component
 async function LogbookContentWrapper({ slug }: { slug: string }) {
-  const [logbook, userRole, contentResult, stats] = await Promise.all([
+  const [logbook, userRole, contentResult, stats, currentUser] = await Promise.all([
     getLogbookHome(slug),
     getUserRole(slug),
     getLogbookContent(slug, 'home'),
-    getLogbookStats(slug)
+    getLogbookStats(slug),
+    getCurrentUser()
   ])
 
   if (!logbook) {
@@ -30,6 +32,7 @@ async function LogbookContentWrapper({ slug }: { slug: string }) {
         userRole={userRole || 'friend'} 
         initialContent={initialContent}
         stats={stats}
+        currentUser={currentUser}
       />
     </PageTransition>
   )

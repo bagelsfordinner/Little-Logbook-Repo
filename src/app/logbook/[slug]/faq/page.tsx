@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { getLogbookHome, getUserRole } from '@/app/actions/logbook'
+import { getCurrentUser } from '@/app/actions/dashboard'
 import { getLogbookContent } from '@/app/actions/universal-content'
 import { Loader } from '@/components/atoms/Loader'
 import { PageTransition } from '@/components/wrappers/PageTransition'
@@ -18,10 +19,11 @@ function FAQLoading() {
 
 // Main FAQ content server component
 async function FAQContentWrapper({ slug }: { slug: string }) {
-  const [logbook, userRole, contentResult] = await Promise.all([
+  const [logbook, userRole, contentResult, currentUser] = await Promise.all([
     getLogbookHome(slug),
     getUserRole(slug),
-    getLogbookContent(slug, 'faq')
+    getLogbookContent(slug, 'faq'),
+    getCurrentUser()
   ])
 
   if (!logbook) {
@@ -92,6 +94,7 @@ async function FAQContentWrapper({ slug }: { slug: string }) {
         logbook={logbook} 
         userRole={userRole || 'friend'} 
         initialContent={initialContent}
+        currentUser={currentUser}
       />
     </PageTransition>
   )
