@@ -137,8 +137,6 @@ export default function MediaCard({
         </AnimatePresence>
 
         <div onClick={handleViewMedia} className={styles.mediaWrapper}>
-          {/* Debug logging for URL */}
-          {console.log('🖼️ [MediaCard] Rendering image:', { mediaUrl: mediaUrl.substring(0, 50) + '...', isBase64: mediaUrl.startsWith('data:') })}
           <ProgressiveImage
             src={mediaUrl}
             alt={caption || 'Media content'}

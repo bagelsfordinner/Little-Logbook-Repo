@@ -116,7 +116,7 @@ export async function compressImageIfNeeded(file: File): Promise<File> {
  * 🔄 Convert image to browser-compatible format (JPEG/PNG)
  */
 async function convertToBrowserFormat(file: File): Promise<File> {
-  console.log('🔄 [FORMAT] Converting image format...', file.type)
+  console.log('🔄 [FORMAT] Converting image format...', file.type, 'Size:', (file.size / 1024 / 1024).toFixed(2), 'MB')
   
   // If already in a supported format, return as-is
   if (['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type)) {
@@ -135,19 +135,34 @@ async function convertToBrowserFormat(file: File): Promise<File> {
     }
     
     img.onload = () => {
+      // Calculate optimal dimensions (max 1920x1920 for gallery)
+      const maxDimension = 1920
+      let { width, height } = img
+      
+      if (width > maxDimension || height > maxDimension) {
+        const ratio = Math.min(maxDimension / width, maxDimension / height)
+        width = Math.round(width * ratio)
+        height = Math.round(height * ratio)
+        console.log('🔧 [FORMAT] Resizing to:', width, 'x', height)
+      }
+      
       // Set canvas dimensions
-      canvas.width = img.width
-      canvas.height = img.height
+      canvas.width = width
+      canvas.height = height
       
-      // Draw image to canvas
-      ctx.drawImage(img, 0, 0)
+      // Draw image to canvas with anti-aliasing
+      ctx.imageSmoothingEnabled = true
+      ctx.imageSmoothingQuality = 'high'
+      ctx.drawImage(img, 0, 0, width, height)
       
-      // Convert to JPEG blob
+      // Convert to JPEG blob with lower quality to reduce size
       canvas.toBlob((blob) => {
         if (!blob) {
           reject(new Error('Failed to convert image'))
           return
         }
+        
+        console.log('📊 [FORMAT] Original size:', (file.size / 1024).toFixed(1), 'KB, New size:', (blob.size / 1024).toFixed(1), 'KB')
         
         // Create new File object
         const convertedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), {
@@ -157,7 +172,7 @@ async function convertToBrowserFormat(file: File): Promise<File> {
         
         console.log('✅ [FORMAT] Converted', file.type, 'to JPEG')
         resolve(convertedFile)
-      }, 'image/jpeg', 0.9)
+      }, 'image/jpeg', 0.7) // Lower quality for smaller files
     }
     
     img.onerror = () => {
