@@ -154,25 +154,43 @@ export default function ProgressiveImage({
               )}
             </AnimatePresence>
 
-            {/* Actual image */}
-            <Image
-              src={src}
-              alt={alt}
-              width={fill ? undefined : width}
-              height={fill ? undefined : height}
-              fill={fill}
-              sizes={sizes}
-              priority={priority}
-              placeholder={placeholder === 'blur' && blurDataURL ? 'blur' : 'empty'}
-              blurDataURL={blurDataURL}
-              onLoadingComplete={handleLoadComplete}
-              onError={handleError}
-              style={{ 
-                objectFit: objectFit,
-                transition: 'opacity 0.3s ease'
-              }}
-              className={styles.image}
-            />
+            {/* Actual image - use regular img for base64, Next Image for URLs */}
+            {src.startsWith('data:') ? (
+              <img
+                src={src}
+                alt={alt}
+                width={fill ? undefined : width}
+                height={fill ? undefined : height}
+                onLoad={handleLoadComplete}
+                onError={handleError}
+                style={{ 
+                  objectFit: objectFit,
+                  transition: 'opacity 0.3s ease',
+                  width: fill ? '100%' : width,
+                  height: fill ? '100%' : height,
+                }}
+                className={styles.image}
+              />
+            ) : (
+              <Image
+                src={src}
+                alt={alt}
+                width={fill ? undefined : width}
+                height={fill ? undefined : height}
+                fill={fill}
+                sizes={sizes}
+                priority={priority}
+                placeholder={placeholder === 'blur' && blurDataURL ? 'blur' : 'empty'}
+                blurDataURL={blurDataURL}
+                onLoadingComplete={handleLoadComplete}
+                onError={handleError}
+                style={{ 
+                  objectFit: objectFit,
+                  transition: 'opacity 0.3s ease'
+                }}
+                className={styles.image}
+              />
+            )}
           </motion.div>
         )}
       </AnimatePresence>
