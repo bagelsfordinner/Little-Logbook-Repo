@@ -40,6 +40,11 @@ interface HelpContentUniversalProps {
   }
   userRole: string
   initialContent?: Record<string, unknown>
+  currentUser?: {
+    id: string
+    email?: string
+    display_name: string
+  } | null
 }
 
 // Helping Guidelines Card Component (similar to FAQ)

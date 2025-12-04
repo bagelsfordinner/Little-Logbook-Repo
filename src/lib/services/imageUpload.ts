@@ -132,7 +132,7 @@ export async function fileToBase64(file: File): Promise<string> {
 }
 
 /**
- * ☁️ Upload to Supabase Storage (with RLS support)
+ * ☁️ Upload to Supabase Storage (with improved RLS support)
  */
 export async function uploadToSupabaseStorage(
   file: File, 
@@ -145,39 +145,72 @@ export async function uploadToSupabaseStorage(
   try {
     const supabase = await createClient()
     
-    // Get authenticated user
-    const { data: { user }, error: userError } = await supabase.auth.getUser()
-    if (userError || !user) {
-      throw new Error('Authentication required for Supabase upload')
+    // Get authenticated user with retry
+    let user = null
+    let userError = null
+    
+    // Try to get user multiple times (server-side auth can be inconsistent)
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const result = await supabase.auth.getUser()
+      user = result.data.user
+      userError = result.error
+      
+      if (user && !userError) break
+      
+      console.log(`⚠️ [SUPABASE] Auth attempt ${attempt} failed:`, userError?.message)
+      
+      if (attempt < 3) {
+        // Wait before retry
+        await new Promise(resolve => setTimeout(resolve, 100 * attempt))
+      }
     }
     
-    // Generate secure file path
-    const fileExt = file.name.split('.').pop()
+    if (userError || !user) {
+      console.warn('⚠️ [SUPABASE] Auth failed after retries, falling back to base64')
+      throw new Error('Authentication failed for Supabase upload')
+    }
+    
+    // Generate secure file path with better folder structure
+    const fileExt = file.name.split('.').pop()?.toLowerCase()
     const timestamp = Date.now()
-    const fileName = `${opts.folder}/${user.id}/${timestamp}-${Math.random().toString(36).substring(2)}.${fileExt}`
+    const randomId = Math.random().toString(36).substring(2, 8)
+    const fileName = `${opts.folder}/${timestamp}-${randomId}.${fileExt}`
     
     console.log('📁 [SUPABASE] Uploading to path:', fileName)
     
-    // Upload file
-    const { error } = await supabase.storage
+    // Upload file with better error handling
+    const { data: uploadData, error } = await supabase.storage
       .from(opts.bucket)
       .upload(fileName, file, {
         cacheControl: '3600',
-        upsert: false, // Create new file each time
+        upsert: false,
         contentType: file.type
       })
     
     if (error) {
       console.error('❌ [SUPABASE] Upload failed:', error)
+      
+      // Check if it's a permissions issue
+      if (error.message?.includes('permission') || error.message?.includes('policy')) {
+        throw new Error('Storage permissions denied - falling back to base64')
+      }
+      
       throw error
     }
+    
+    console.log('📁 [SUPABASE] Upload data:', uploadData)
     
     // Get public URL
     const { data: { publicUrl } } = supabase.storage
       .from(opts.bucket)
       .getPublicUrl(fileName)
     
-    console.log('✅ [SUPABASE] Upload successful:', publicUrl)
+    // Verify URL is accessible
+    if (!publicUrl || publicUrl.includes('undefined')) {
+      throw new Error('Invalid public URL generated')
+    }
+    
+    console.log('✅ [SUPABASE] Upload successful:', publicUrl.substring(0, 100) + '...')
     
     return {
       success: true,
@@ -231,7 +264,7 @@ export async function uploadAsBase64(
 }
 
 /**
- * 🚀 Smart Upload - Try multiple strategies with fallbacks
+ * 🚀 Smart Upload - Try multiple strategies with intelligent fallbacks
  */
 export async function smartImageUpload(
   file: File,
@@ -250,19 +283,20 @@ export async function smartImageUpload(
   // Step 2: Compress if needed (future enhancement)
   const processedFile = await compressImageIfNeeded(file)
   
-  // Step 3: Try upload strategies in order of preference
-  const strategies = [
-    { name: 'supabase', fn: uploadToSupabaseStorage },
-    { name: 'base64', fn: uploadAsBase64 }
-  ]
+  // Step 3: Determine strategy order based on context and file size
+  const strategies = []
   
-  // If specific strategy requested, try it first
-  if (opts.strategy !== 'base64') {
-    const preferredStrategy = strategies.find(s => s.name === opts.strategy)
-    if (preferredStrategy) {
-      strategies.unshift(preferredStrategy)
-    }
+  // For large files or when explicitly requested, prefer Supabase storage
+  if (opts.strategy === 'supabase' || file.size > 2 * 1024 * 1024) {
+    strategies.push({ name: 'supabase', fn: uploadToSupabaseStorage })
+    strategies.push({ name: 'base64', fn: uploadAsBase64 })
+  } else {
+    // For smaller files, base64 is more reliable
+    strategies.push({ name: 'base64', fn: uploadAsBase64 })
+    strategies.push({ name: 'supabase', fn: uploadToSupabaseStorage })
   }
+  
+  const errors: string[] = []
   
   for (const strategy of strategies) {
     console.log(`🎯 [SMART UPLOAD] Trying ${strategy.name} strategy...`)
@@ -274,11 +308,30 @@ export async function smartImageUpload(
       return result
     }
     
-    console.log(`⚠️ [SMART UPLOAD] ${strategy.name} failed, trying next strategy...`)
+    const errorMsg = `${strategy.name}: ${result.error}`
+    errors.push(errorMsg)
+    console.log(`⚠️ [SMART UPLOAD] ${strategy.name} failed: ${result.error}`)
+    
+    // If it's a permission/auth error, skip to base64 immediately
+    if (result.error?.includes('permission') || result.error?.includes('auth')) {
+      console.log('🔄 [SMART UPLOAD] Auth/permission issue detected, trying base64...')
+      if (strategy.name !== 'base64') {
+        const base64Result = await uploadAsBase64(processedFile)
+        if (base64Result.success) {
+          console.log('🎉 [SMART UPLOAD] Success with fallback base64 strategy!')
+          return base64Result
+        }
+        errors.push(`base64: ${base64Result.error}`)
+      }
+      break
+    }
   }
   
   console.error('💥 [SMART UPLOAD] All strategies failed')
-  return { success: false, error: 'All upload strategies failed' }
+  return { 
+    success: false, 
+    error: `All upload strategies failed: ${errors.join('; ')}`
+  }
 }
 
 /**

@@ -141,7 +141,7 @@ export default function NotFound() {
                 delay: i * 0.2,
               }}
             >
-              <Icon name={['camera', 'edit', 'heart', 'star', 'book', 'sparkles'][i]} size="xs" />
+              <Icon name={(['camera', 'edit', 'heart', 'star', 'book-open', 'sparkles'] as const)[i]} size="xs" />
             </motion.div>
           ))}
         </div>

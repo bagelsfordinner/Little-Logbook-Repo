@@ -11,6 +11,7 @@ type UserRole = 'parent' | 'family' | 'friend'
 interface HeaderProps {
   logbookName: string
   logbookSlug: string
+  logbookId?: string // Optional for backwards compatibility
   userName: string
   userAvatar?: string
   userRole: UserRole
@@ -30,6 +31,7 @@ const getNavLinks = (logbookSlug: string) => [
 export default function Header({
   logbookName,
   logbookSlug,
+  logbookId, // Accept but don't use for now
   userName,
   userAvatar,
   userRole,
@@ -251,3 +253,6 @@ export default function Header({
     </header>
   )
 }
+
+// Named export for backwards compatibility
+export { Header as Header }

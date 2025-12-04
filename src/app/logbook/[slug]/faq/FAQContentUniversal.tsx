@@ -22,6 +22,11 @@ interface FAQContentUniversalProps {
   }
   userRole: string
   initialContent?: Record<string, unknown>
+  currentUser?: {
+    id: string
+    email?: string
+    display_name: string
+  } | null
 }
 
 // FAQ Card Component

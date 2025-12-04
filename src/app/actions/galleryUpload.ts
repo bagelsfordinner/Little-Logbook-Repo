@@ -143,7 +143,9 @@ export async function uploadGalleryImages(
         console.log('☁️ [GALLERY UPLOAD] Uploading to storage...')
         const uploadResult = await uploadImage(file, {
           ...uploadOptions,
-          folder: `gallery/${logbookSlug}`
+          folder: `gallery/${logbookSlug}`,
+          // Use base64 as primary strategy for gallery to avoid RLS issues
+          strategy: file.size > 5 * 1024 * 1024 ? 'supabase' : 'base64'
         })
 
         if (!uploadResult.success) {
