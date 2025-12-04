@@ -115,3 +115,5 @@ export function DeleteConfirmModal({
     </AnimatePresence>
   )
 }
+
+export default DeleteConfirmModal;
