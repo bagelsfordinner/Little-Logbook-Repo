@@ -54,7 +54,7 @@ const DEFAULT_OPTIONS: Required<ImageUploadOptions> = {
   allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif'],
   compressionQuality: 0.8,
   enableRLS: true,
-  strategy: 'base64' // Default to base64 for RLS compatibility
+  strategy: 'supabase' // Use Supabase Storage to avoid base64 size limits
 }
 
 /**
@@ -155,14 +155,16 @@ async function convertToBrowserFormat(file: File): Promise<File> {
       ctx.imageSmoothingQuality = 'high'
       ctx.drawImage(img, 0, 0, width, height)
       
-      // Convert to JPEG blob with lower quality to reduce size
+      // Convert to JPEG blob with aggressive compression for large files
+      const quality = file.size > 5 * 1024 * 1024 ? 0.5 : 0.7 // Very aggressive for >5MB files
+      
       canvas.toBlob((blob) => {
         if (!blob) {
           reject(new Error('Failed to convert image'))
           return
         }
         
-        console.log('📊 [FORMAT] Original size:', (file.size / 1024).toFixed(1), 'KB, New size:', (blob.size / 1024).toFixed(1), 'KB')
+        console.log('📊 [FORMAT] Original size:', (file.size / 1024).toFixed(1), 'KB, New size:', (blob.size / 1024).toFixed(1), 'KB, Quality:', quality)
         
         // Create new File object
         const convertedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), {
@@ -172,7 +174,7 @@ async function convertToBrowserFormat(file: File): Promise<File> {
         
         console.log('✅ [FORMAT] Converted', file.type, 'to JPEG')
         resolve(convertedFile)
-      }, 'image/jpeg', 0.7) // Lower quality for smaller files
+      }, 'image/jpeg', quality)
     }
     
     img.onerror = () => {
@@ -361,12 +363,14 @@ export async function smartImageUpload(
   // Step 3: Determine strategy order based on context and file size
   const strategies = []
   
-  // For large files or when explicitly requested, prefer Supabase storage
-  if (opts.strategy === 'supabase' || file.size > 2 * 1024 * 1024) {
+  // Base64 has ~33% overhead, so 7MB file becomes ~9.3MB + request overhead
+  // Use Supabase for files > 6MB to avoid 10MB server action limit
+  if (opts.strategy === 'supabase' || processedFile.size > 6 * 1024 * 1024) {
+    console.log('📊 [SMART UPLOAD] Large file detected, using Supabase Storage first')
     strategies.push({ name: 'supabase', fn: uploadToSupabaseStorage })
     strategies.push({ name: 'base64', fn: uploadAsBase64 })
   } else {
-    // For smaller files, base64 is more reliable
+    console.log('📊 [SMART UPLOAD] Small file, trying base64 first')
     strategies.push({ name: 'base64', fn: uploadAsBase64 })
     strategies.push({ name: 'supabase', fn: uploadToSupabaseStorage })
   }
