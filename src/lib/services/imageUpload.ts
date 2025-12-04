@@ -51,7 +51,7 @@ const DEFAULT_OPTIONS: Required<ImageUploadOptions> = {
   bucket: 'media',
   folder: 'uploads',
   maxSizeBytes: 5 * 1024 * 1024, // 5MB
-  allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+  allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif'],
   compressionQuality: 0.8,
   enableRLS: true,
   strategy: 'base64' // Default to base64 for RLS compatibility
@@ -113,17 +113,77 @@ export async function compressImageIfNeeded(file: File): Promise<File> {
 }
 
 /**
+ * 🔄 Convert image to browser-compatible format (JPEG/PNG)
+ */
+async function convertToBrowserFormat(file: File): Promise<File> {
+  console.log('🔄 [FORMAT] Converting image format...', file.type)
+  
+  // If already in a supported format, return as-is
+  if (['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type)) {
+    console.log('✅ [FORMAT] Already compatible format:', file.type)
+    return file
+  }
+  
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    
+    if (!ctx) {
+      reject(new Error('Canvas context not available'))
+      return
+    }
+    
+    img.onload = () => {
+      // Set canvas dimensions
+      canvas.width = img.width
+      canvas.height = img.height
+      
+      // Draw image to canvas
+      ctx.drawImage(img, 0, 0)
+      
+      // Convert to JPEG blob
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          reject(new Error('Failed to convert image'))
+          return
+        }
+        
+        // Create new File object
+        const convertedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), {
+          type: 'image/jpeg',
+          lastModified: Date.now()
+        })
+        
+        console.log('✅ [FORMAT] Converted', file.type, 'to JPEG')
+        resolve(convertedFile)
+      }, 'image/jpeg', 0.9)
+    }
+    
+    img.onerror = () => {
+      reject(new Error('Failed to load image for conversion'))
+    }
+    
+    // Create object URL for the file
+    img.src = URL.createObjectURL(file)
+  })
+}
+
+/**
  * 📦 Convert file to base64 data URL
  */
 export async function fileToBase64(file: File): Promise<string> {
-  console.log('📦 [BASE64] Converting file to base64...')
+  console.log('📦 [BASE64] Converting file to base64...', file.type)
   
   try {
-    const buffer = await file.arrayBuffer()
-    const base64String = Buffer.from(buffer).toString('base64')
-    const dataUrl = `data:${file.type};base64,${base64String}`
+    // First, convert to browser-compatible format if needed
+    const compatibleFile = await convertToBrowserFormat(file)
     
-    console.log('✅ [BASE64] Conversion successful, length:', base64String.length)
+    const buffer = await compatibleFile.arrayBuffer()
+    const base64String = Buffer.from(buffer).toString('base64')
+    const dataUrl = `data:${compatibleFile.type};base64,${base64String}`
+    
+    console.log('✅ [BASE64] Conversion successful, length:', base64String.length, 'type:', compatibleFile.type)
     return dataUrl
   } catch (error) {
     console.error('❌ [BASE64] Conversion failed:', error)
