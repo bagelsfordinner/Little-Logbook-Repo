@@ -2,6 +2,21 @@
 
 import { createClient } from '@/lib/supabase/client'
 
+// Gallery image interface based on existing table structure
+export interface GalleryImage {
+  id: string
+  logbook_id: string
+  uploader_id: string
+  uploader_name: string
+  file_url: string
+  thumbnail_url?: string
+  caption?: string
+  upload_date: string
+  file_size: number
+  mime_type: string
+  original_filename: string
+}
+
 export interface DirectUploadResult {
   success: boolean
   images?: UploadedImage[]
@@ -49,7 +64,7 @@ export async function uploadImagesDirectly(
       .from('logbooks')
       .select('id, name')
       .eq('slug', logbookSlug)
-      .single()
+      .single() as { data: { id: string; name: string } | null; error: any }
 
     if (logbookError || !logbook) {
       return { success: false, error: 'Logbook not found' }
@@ -71,6 +86,11 @@ export async function uploadImagesDirectly(
         const timestamp = Date.now()
         const randomId = Math.random().toString(36).substring(2, 8)
         const fileExt = processedFile.name.split('.').pop()?.toLowerCase() || 'jpg'
+        if (!logbook?.id) {
+          errors.push(`${file.name}: Logbook not found`)
+          continue
+        }
+        
         const fileName = `gallery/${logbook.id}/${timestamp}-${randomId}.${fileExt}`
 
         console.log(`☁️ [DIRECT UPLOAD] Uploading to: ${fileName}`)
@@ -97,8 +117,8 @@ export async function uploadImagesDirectly(
 
         console.log(`✅ [DIRECT UPLOAD] Upload successful: ${fileName}`)
 
-        // Save to database
-        const { data: dbData, error: dbError } = await supabase
+        // Save to database - using any casting due to missing table types
+        const { data: dbData, error: dbError } = await (supabase as any)
           .from('gallery_images')
           .insert({
             logbook_id: logbook.id,
@@ -123,12 +143,12 @@ export async function uploadImagesDirectly(
         }
 
         results.push({
-          id: dbData.id,
+          id: dbData?.id,
           file_url: publicUrl,
           original_filename: file.name,
           file_size: processedFile.size,
           mime_type: processedFile.type,
-          upload_date: dbData.upload_date
+          upload_date: dbData?.upload_date
         })
 
       } catch (error) {
@@ -222,9 +242,14 @@ async function convertToWebCompatible(file: File): Promise<File> {
 }
 
 /**
- * 📸 Simple single image upload for inline content
+ * 📸 Simple single image upload for inline content with content update
  */
-export async function uploadImageToLogbook(logbookSlug: string, file: File): Promise<{ success: boolean; url?: string; error?: string }> {
+export async function uploadImageToLogbook(
+  logbookSlug: string, 
+  file: File,
+  pageType?: string,
+  contentPath?: string
+): Promise<{ success: boolean; url?: string; error?: string }> {
   try {
     const supabase = createClient()
     
@@ -239,7 +264,7 @@ export async function uploadImageToLogbook(logbookSlug: string, file: File): Pro
       .from('logbooks')
       .select('id')
       .eq('slug', logbookSlug)
-      .single()
+      .single() as { data: { id: string } | null; error: any }
 
     if (logbookError || !logbook) {
       return { success: false, error: 'Logbook not found' }
@@ -252,6 +277,10 @@ export async function uploadImageToLogbook(logbookSlug: string, file: File): Pro
     const timestamp = Date.now()
     const randomId = Math.random().toString(36).substring(2, 8)
     const fileExt = processedFile.name.split('.').pop()?.toLowerCase() || 'jpg'
+    if (!logbook?.id) {
+      return { success: false, error: 'Logbook not found' }
+    }
+    
     const fileName = `content/${logbook.id}/${timestamp}-${randomId}.${fileExt}`
 
     // Upload to Supabase Storage
@@ -271,6 +300,21 @@ export async function uploadImageToLogbook(logbookSlug: string, file: File): Pro
     const { data: { publicUrl } } = supabase.storage
       .from('media')
       .getPublicUrl(fileName)
+
+    // If pageType and contentPath are provided, update the logbook content
+    if (pageType && contentPath) {
+      try {
+        const { updateLogbookContent } = await import('@/app/actions/universal-content')
+        const contentResult = await updateLogbookContent(logbookSlug, pageType, contentPath, publicUrl)
+        
+        if (!contentResult.success) {
+          console.error('Failed to update content:', contentResult.error)
+          // Still return success for the upload, just log the content update failure
+        }
+      } catch (error) {
+        console.error('Error importing content update function:', error)
+      }
+    }
 
     return { success: true, url: publicUrl }
 
@@ -297,8 +341,8 @@ export async function deleteImageDirectly(imageId: string): Promise<{ success: b
       return { success: false, error: 'Authentication required' }
     }
 
-    // Get image info first
-    const { data: imageData, error: fetchError } = await supabase
+    // Get image info first - using any casting due to missing table types
+    const { data: imageData, error: fetchError } = await (supabase as any)
       .from('gallery_images')
       .select('file_url, uploader_id, logbook_id')
       .eq('id', imageId)
@@ -310,13 +354,13 @@ export async function deleteImageDirectly(imageId: string): Promise<{ success: b
     }
 
     // Check ownership - users can only delete their own images
-    if (imageData.uploader_id !== user.id) {
+    if (imageData?.uploader_id !== user.id) {
       console.error('❌ [DELETE] Permission denied - not owner')
       return { success: false, error: 'Permission denied - you can only delete your own images' }
     }
 
     // Extract storage path from URL
-    const url = new URL(imageData.file_url)
+    const url = new URL(imageData?.file_url)
     const storagePath = url.pathname.replace('/storage/v1/object/public/media/', '')
 
     console.log('🗑️ [DELETE] Deleting from storage:', storagePath)
@@ -331,8 +375,8 @@ export async function deleteImageDirectly(imageId: string): Promise<{ success: b
       return { success: false, error: 'Failed to delete file from storage' }
     }
 
-    // Delete from database
-    const { error: dbError } = await supabase
+    // Delete from database - using any casting due to missing table types
+    const { error: dbError } = await (supabase as any)
       .from('gallery_images')
       .delete()
       .eq('id', imageId)

@@ -174,7 +174,7 @@ export function Editable({
 
     try {
       console.log('🚀 [IMAGE UPLOAD] Calling new robust uploadImageToLogbook...')
-      const result = await uploadImageToLogbook(logbookSlug, pageType, path, file, 'hero')
+      const result = await uploadImageToLogbook(logbookSlug, file, pageType, path)
       
       console.log('📋 [IMAGE UPLOAD] Server response:', result)
       
@@ -184,7 +184,7 @@ export function Editable({
       } else if (result.url) {
         console.log('🎉 [IMAGE UPLOAD] Upload successful!')
         console.log('🎉 [IMAGE UPLOAD] URL:', result.url.substring(0, 100) + '...')
-        console.log('🎉 [IMAGE UPLOAD] Metadata:', result.metadata)
+        // Note: result.metadata is not available from direct upload service
         console.log('🔄 [IMAGE UPLOAD] Reloading page to show new image...')
         window.location.reload()
       } else {
