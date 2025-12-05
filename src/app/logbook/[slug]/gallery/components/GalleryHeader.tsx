@@ -40,16 +40,16 @@ export function GalleryHeader({
     }
 
     try {
-      // Import the upload action
-      const { uploadGalleryImages } = await import('@/app/actions/galleryUpload')
+      // Import the direct upload service
+      const { uploadImagesDirectly } = await import('@/lib/services/directUpload')
       
-      console.log('🚀 [GALLERY UI] Starting upload process...')
+      console.log('🚀 [GALLERY UI] Starting direct upload...')
       
-      // Call the robust upload function
-      const result = await uploadGalleryImages(
-        window.location.pathname.split('/')[2], // Extract slug from URL
-        fileArray
-      )
+      // Get logbook slug from URL
+      const logbookSlug = window.location.pathname.split('/')[2]
+      
+      // Call direct upload function
+      const result = await uploadImagesDirectly(logbookSlug, fileArray)
 
       console.log('📊 [GALLERY UI] Upload result:', {
         success: result.success,
@@ -58,18 +58,32 @@ export function GalleryHeader({
       })
 
       if (result.success && result.images) {
-        console.log('🎉 [GALLERY UI] Upload successful! Notifying parent component...')
-        onUploadComplete(result.images)
+        console.log('🎉 [GALLERY UI] Upload successful!')
+        
+        // Convert to expected format for parent component
+        const galleryImages = result.images.map(img => ({
+          id: img.id,
+          logbook_id: logbookSlug,
+          uploader_id: '',
+          uploader_name: '',
+          file_url: img.file_url,
+          thumbnail_url: img.thumbnail_url,
+          caption: undefined,
+          upload_date: img.upload_date,
+          file_size: img.file_size,
+          mime_type: img.mime_type,
+          original_filename: img.original_filename
+        }))
+        
+        onUploadComplete(galleryImages)
         
         // Show success message
         if (result.details) {
           const { successful, failed, total } = result.details
           if (failed > 0) {
             console.warn(`⚠️ [GALLERY UI] Partial success: ${successful}/${total} files uploaded`)
-            // TODO: Show toast notification about partial success
           } else {
             console.log(`✅ [GALLERY UI] All ${successful} files uploaded successfully`)
-            // TODO: Show success toast
           }
         }
       } else {
@@ -83,7 +97,6 @@ export function GalleryHeader({
           })
         }
         
-        // TODO: Show error toast with details
         alert(`Upload failed: ${result.error}`)
       }
 

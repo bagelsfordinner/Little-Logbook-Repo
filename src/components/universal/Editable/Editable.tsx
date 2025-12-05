@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, ReactNode } from 'react'
 import { useContent, ContentType } from '@/lib/contexts/ContentContext'
-import { uploadImageToLogbook } from '@/app/actions/imageUpload'
+import { uploadImageToLogbook } from '@/lib/services/directUpload'
 import { Icon } from '@/components/atoms/Icon'
 import Image from 'next/image'
 import { safeString, safeBoolean } from '@/lib/utils/typeUtils'

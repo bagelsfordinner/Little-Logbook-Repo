@@ -106,8 +106,29 @@ function GalleryContent({ logbook }: { logbook: GalleryContentUniversalProps['lo
     setImages(prev => [...newImages, ...prev]) // Add new images to beginning
   }
 
-  const handleImageDelete = (imageId: string) => {
-    setImages(prev => prev.filter(img => img.id !== imageId))
+  const handleImageDelete = async (imageId: string) => {
+    try {
+      console.log('🗑️ [GALLERY] Starting image deletion:', imageId)
+      
+      // Import delete function
+      const { deleteImageDirectly } = await import('@/lib/services/directUpload')
+      
+      // Delete from storage and database
+      const result = await deleteImageDirectly(imageId)
+      
+      if (result.success) {
+        console.log('✅ [GALLERY] Image deleted successfully')
+        // Update local state to remove the image
+        setImages(prev => prev.filter(img => img.id !== imageId))
+      } else {
+        console.error('❌ [GALLERY] Delete failed:', result.error)
+        alert(`Delete failed: ${result.error}`)
+      }
+      
+    } catch (error) {
+      console.error('💥 [GALLERY] Critical delete error:', error)
+      alert(`Delete error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
   }
 
   const handleSettingsUpdate = async (newSettings: Partial<GalleryDisplaySettings>) => {
